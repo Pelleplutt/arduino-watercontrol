@@ -1,0 +1,45 @@
+/* PORT DEFINITIONS FOR ARDUINO CONNECTIONS */
+
+#ifndef PORT_H_INCLUDED
+#define PORT_H_INCLUDED 1
+
+#define PORT_BTN0   18
+#define PORT_BTN1   19
+#define PORT_BTN2   20
+#define PORT_BTN3   21
+
+#define PORT_DISPLAY_DB0  22
+#define PORT_DISPLAY_DB1  24
+#define PORT_DISPLAY_DB2  26
+#define PORT_DISPLAY_DB3  28
+#define PORT_DISPLAY_DB4  30
+#define PORT_DISPLAY_DB5  32
+#define PORT_DISPLAY_DB6  34
+#define PORT_DISPLAY_DB7  36
+#define PORT_DISPLAY_CS2  38
+#define PORT_DISPLAY_CS1  40
+#define PORT_DISPLAY_RST  42
+#define PORT_DISPLAY_RW   44
+#define PORT_DISPLAY_DI   46
+#define PORT_DISPLAY_E    48
+
+#define PORT_RELAY_0  23
+#define PORT_RELAY_1  25
+#define PORT_RELAY_2  27
+#define PORT_RELAY_3  29
+#define PORT_RELAY_4  31
+#define PORT_RELAY_5  33
+#define PORT_RELAY_6  35
+#define PORT_RELAY_7  37
+
+#define PORT_SENSE0_S   2
+#define PORT_SENSE0_A0  43
+#define PORT_SENSE0_A1  45
+#define PORT_SENSE0_E   47
+
+#define PORT_SENSE1_S   3
+#define PORT_SENSE1_A0  49
+#define PORT_SENSE1_A1  51
+#define PORT_SENSE1_E   53
+
+#endif
