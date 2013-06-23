@@ -12,6 +12,7 @@ unsigned long last_button_read = 0;
   /* Currently selected monitor from first screen */
 int monitor_selection = 0;
 
+  /* Currently displaying screen */
 int current_screen = SCREEN_OVERVIEW;
 monitor  monitors[8];
 
@@ -23,24 +24,24 @@ char *timeString(unsigned long seconds) {
   *buf = 0;
   if(seconds > 86400) {
     len += snprintf(buf + len, 32 - len, "%dd", seconds / 86400);
-    seconds = seconds % 86400; 
+    seconds = seconds % 86400;
   }
-  
+
   if(seconds > 3600) {
     len += snprintf(buf + len, 32 - len, "%dh", seconds / 3600);
-    seconds = seconds % 3600; 
+    seconds = seconds % 3600;
   }
 
   if(seconds > 60) {
     len += snprintf(buf + len, 32 - len, "%dm", seconds / 60);
-    seconds = seconds % 60; 
+    seconds = seconds % 60;
   }
-  
+
   if(seconds % 60) {
     len += snprintf(buf + len, 32 - len, "%dm", seconds / 60);
   }
-    
-  
+
+
   return buf;
 }
 
@@ -62,17 +63,17 @@ int getSensorValue(int value, unsigned long calibrated_min, unsigned long calibr
 
     return percent;
   }
-  
+
   return -1;
 }
 
 /*******************************************************************************/
 void drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibrated_max) {
   if(value >= 0) {
-    
+
     int percent = getSensorValue(value, calibrated_min, calibrated_max);
     int pixels = (GLCD.Width - 1) * percent / 100;
-    
+
     if(percent == 100) {
       GLCD.CursorTo(17, 0);
     } else if(percent >= 10) {
@@ -83,7 +84,7 @@ void drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibr
     GLCD.print(percent, DEC);
     GLCD.PutChar('%');
 
-    
+
     GLCD.FillRect(0, 10, GLCD.Width - 1, 10, WHITE);
     GLCD.DrawRect(0, 10, GLCD.Width - 1, 10, BLACK);
     GLCD.FillRect(0, 10, pixels, 10, BLACK);
@@ -185,7 +186,6 @@ void draw() {
       drawConf();
       break;
     }
-      
   }
 }
 

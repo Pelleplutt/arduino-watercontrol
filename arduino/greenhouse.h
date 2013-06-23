@@ -45,7 +45,10 @@ typedef struct monitor {
   int   current_value;
 };
 
+
 extern int monitor_selection;
+
+  /* Currently displaying screen in the application */
 extern int current_screen;
 extern monitor  monitors[8];
 
