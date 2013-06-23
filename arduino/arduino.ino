@@ -94,16 +94,43 @@ void drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibr
 
 /*******************************************************************************/
 void setup() {
-  
-  GLCD.Init();
-  
-  pinMode(PIN_BUTTON_1, INPUT);
-  pinMode(PIN_BUTTON_2, INPUT);
-  pinMode(PIN_BUTTON_3, INPUT);
-  
+
+  Serial.begin(9600);
+
+  pinMode(13, OUTPUT);
+
+    /* Setup ports for water control */
+  pinMode(PORT_RELAY0, OUTPUT);
+  pinMode(PORT_RELAY1, OUTPUT);
+  pinMode(PORT_RELAY2, OUTPUT);
+  pinMode(PORT_RELAY3, OUTPUT);
+  pinMode(PORT_RELAY4, OUTPUT);
+  pinMode(PORT_RELAY5, OUTPUT);
+  pinMode(PORT_RELAY6, OUTPUT);
+  pinMode(PORT_RELAY7, OUTPUT);
+
+    /* Setup ports for pushbuttons */
+  pinMode(PORT_BTN0, INPUT);
+  pinMode(PORT_BTN1, INPUT);
+  pinMode(PORT_BTN2, INPUT);
+  pinMode(PORT_BTN3, INPUT);
+
+    /* Setup port for sensors, Adress lines and enablers */
+  pinMode(PORT_SENSE0_A0, OUTPUT);
+  pinMode(PORT_SENSE0_A1, OUTPUT);
+  pinMode(PORT_SENSE0_E, OUTPUT);
+
+  pinMode(PORT_SENSE1_A0, OUTPUT);
+  pinMode(PORT_SENSE1_A1, OUTPUT);
+  pinMode(PORT_SENSE1_E, OUTPUT);
+
+    /* FIXME Setup interrupts for sensors */
+
+
+    /*  Initialize monitor structure, this way we know it
+        contains nothing wrong at least */
   memset(monitors, sizeof(monitors), 0);
-  
-  
+
   strcpy(monitors[0].name, "Port a0");
   strcpy(monitors[1].name, "Port a1");
   strcpy(monitors[2].name, "Port b2");
@@ -112,19 +139,31 @@ void setup() {
   strcpy(monitors[5].name, "Port c5");
   strcpy(monitors[6].name, "Port d6");
   strcpy(monitors[7].name, "Port d7");
-  
+
   for(int i = 0; i < 8; i++) {
-    monitors[i].current_value = i * 10 - 1;
-    monitors[i].calibrated_max = 100;
+      /* Given the current hardware and limitations we will
+         max out at around 7000 when the sensors are shorted */
+    monitors[i].calibrated_max = 7000;
+      /* The sensors will idle at around 48hz when in open
+         air */
+    monitors[i].calibrated_min = 48;
+
     monitors[i].enabled = 1;
   }
-  monitors[0].water_port = WATER_PORT_0;
-  monitors[1].water_port = WATER_PORT_1;
-  
-  pinMode(WATER_PORT_0, OUTPUT);
-  pinMode(WATER_PORT_1, INPUT);
-  
-  
+
+    /* At some point we might want to disconnect the 1-1
+       matching between the given input signal sensor
+       number and the output water flow valve number */
+  monitors[0].water_port = PORT_RELAY0;
+  monitors[1].water_port = PORT_RELAY1;
+  monitors[2].water_port = PORT_RELAY2;
+  monitors[3].water_port = PORT_RELAY3;
+  monitors[4].water_port = PORT_RELAY4;
+  monitors[5].water_port = PORT_RELAY5;
+  monitors[6].water_port = PORT_RELAY6;
+  monitors[7].water_port = PORT_RELAY7;
+
+  GLCD.Init();
   GLCD.ClearScreen();
   draw();
 }
@@ -173,27 +212,34 @@ void handleInput(int button) {
       handleConfInput(button);
       break;
     }
-      
+
   }
 }
 
 /*******************************************************************************/
 void loop() {
+
+
+
     /* Failsafe */
   if(millis() < last_button_read) {
     last_button_read = 0;
   }
-  
+
   if(millis() - last_button_read > BUTTON_DELAY) {
-    if(digitalRead(PIN_BUTTON_1) == HIGH) {
+    if(digitalRead(PORT_BTN0) == HIGH) {
       handleInput(0);
       last_button_read = millis();
-    }else if(digitalRead(PIN_BUTTON_2) == HIGH) {
+    }else if(digitalRead(PORT_BTN1) == HIGH) {
       handleInput(1);
       last_button_read = millis();
-    }else if(digitalRead(PIN_BUTTON_3) == HIGH) {
+    }else if(digitalRead(PORT_BTN2) == HIGH) {
       handleInput(2);
+      last_button_read = millis();
+    }else if(digitalRead(PORT_BTN3) == HIGH) {
+      handleInput(3);
       last_button_read = millis();
     }
   }
+
 }

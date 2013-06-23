@@ -7,10 +7,6 @@
 
 #include "fonts/SystemFont5x7.h"
 
-#define PIN_BUTTON_1  35
-#define PIN_BUTTON_2  33
-#define PIN_BUTTON_3  31
-
 #define BUTTON_DELAY  150
 
 #define DISPLAY_Y_MIDDLE  4
@@ -23,10 +19,6 @@
 #define NAME_MAX_LEN 10
 #define MAX_WATER_DURATION 1800
 #define MAX_WATER_INTERVAL (7 * 86400)
-
-#define WATER_PORT_0  51  
-#define WATER_PORT_1  53
-
 
 typedef struct monitor {
   char  name[NAME_MAX_LEN + 1];
