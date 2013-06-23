@@ -1,9 +1,10 @@
 #include <glcd.h>
 #include <glcd_Buildinfo.h>
-#include <glcd_Config.h>
+#include <glcd_watercontrol.h>
 
-#include "fonts/SystemFont5x7.h"
 #include "greenhouse.h"
+#include "ports.h"
+#include "fonts/SystemFont5x7.h"
 
 
 unsigned long last_button_read = 0;
