@@ -23,14 +23,14 @@
 #define PORT_DISPLAY_DI   46
 #define PORT_DISPLAY_E    48
 
-#define PORT_RELAY_0  23
-#define PORT_RELAY_1  25
-#define PORT_RELAY_2  27
-#define PORT_RELAY_3  29
-#define PORT_RELAY_4  31
-#define PORT_RELAY_5  33
-#define PORT_RELAY_6  35
-#define PORT_RELAY_7  37
+#define PORT_RELAY0  23
+#define PORT_RELAY1  25
+#define PORT_RELAY2  27
+#define PORT_RELAY3  29
+#define PORT_RELAY4  31
+#define PORT_RELAY5  33
+#define PORT_RELAY6  35
+#define PORT_RELAY7  37
 
 #define PORT_SENSE0_S   2
 #define PORT_SENSE0_A0  43
