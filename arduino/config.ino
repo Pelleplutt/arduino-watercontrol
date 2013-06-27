@@ -76,7 +76,7 @@ void handleConfigNameInput(int button) {
                     }
                 } else if(config_alphabet[config_alphabet_pos] == 0x7e) {
                     strcpy(monitors[monitor_selection].name, config_edit_name);
-                    config_selection = 0;
+                    active_config = -1;
                     draw();
                 } else if(slen < NAME_MAX_LEN) {
                     config_edit_name[slen] = config_alphabet[config_alphabet_pos];
@@ -87,7 +87,7 @@ void handleConfigNameInput(int button) {
             }
         case BUTTON_3: 
             {
-                config_selection = 0;
+                active_config = -1;
                 draw();
                 break;
             }
@@ -135,7 +135,7 @@ void handleConfigWaterInput(int button) {
             }
         case 2: 
             {
-                config_selection = 2;
+                active_config = -1;
                 draw();
                 break;
             }
@@ -191,7 +191,7 @@ void handleConfigIntervalInput(int button) {
             }
         case 2: 
             {
-                config_selection = 7;
+                active_config = -1;
                 draw();
                 break;
             }
@@ -243,7 +243,7 @@ void handleConfigTriggerInput(int button) {
             }
         case 2: 
             {
-                config_selection = 3;
+                active_config = -1;
                 draw();
                 break;
             }
@@ -290,7 +290,7 @@ void handleConfigEnabledInput(int button) {
             }
         case 2: 
             {
-                config_selection = 5;
+                active_config = -1;
                 draw();
                 break;
             }
@@ -329,7 +329,7 @@ void handleConfigManualInput(int button) {
             }
         case 2: 
             {
-                config_selection = 5;
+                active_config = -1;
                 draw();
                 break;
             }
