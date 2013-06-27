@@ -1,6 +1,6 @@
 #include "greenhouse.h"
 
-char configmenu[8][12] = {"Name", "Calibrate", "Water", "Trigger", "Manual", "Enabled", "Measure", "Interval"};
+char configmenu[8][12] = {"Name", "Calibrate", "Water dur", "Trigger", "Manual", "Enabled", "Measure", "Interval"};
 int config_selection = 0;
 int active_config = -1;
 
@@ -114,7 +114,7 @@ void drawConfigWater() {
 
 void handleConfigWaterInput(int button) {
     switch(button) {
-        case 0: 
+        case BUTTON_0: 
             {
                 if(config_edit_water_duration < MAX_WATER_DURATION) {
                     if(config_edit_water_duration >= 180) {
@@ -128,12 +128,26 @@ void handleConfigWaterInput(int button) {
                 drawConfigEditWater();
                 break;
             }
-        case 1: 
+        case BUTTON_1: 
+            {
+                if(config_edit_water_duration > 0) {
+                    if(config_edit_water_duration >= 180) {
+                        config_edit_water_duration -= 60;
+                    } else {
+                        config_edit_water_duration -= 10;
+                    }
+                } else {
+                    config_edit_water_duration = MAX_WATER_DURATION;
+                }
+                drawConfigEditWater();
+                break;
+            }
+        case BUTTON_2: 
             {
                 monitors[monitor_selection].water_duration = config_edit_water_duration;
                 /* No break */  
             }
-        case 2: 
+        case BUTTON_3: 
             {
                 active_config = -1;
                 draw();
@@ -448,6 +462,9 @@ void handleConfInput(int button) {
                     handleConfigNameInput(button);
                     break;
                 }
+            case 1:
+                active_config = -1;
+                break;
             case 2: 
                 {
                     handleConfigWaterInput(button);
