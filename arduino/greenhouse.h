@@ -31,28 +31,28 @@
 #define MAX_WATER_INTERVAL (7 * 86400)
 
 typedef struct monitor {
-  char  name[NAME_MAX_LEN + 1];
-  
+    char  name[NAME_MAX_LEN + 1];
+
     /* Enabled or disabled */
-  char  enabled;
+    char  enabled;
     /* Open/closed */  
-  unsigned char  water_state;
+    unsigned char  water_state;
     /* Connected to what port */
-  char water_port;
-  
+    char water_port;
+
     /* Calibrated wet sensor value */
-  unsigned long   calibrated_max;
-  unsigned long   calibrated_min;
-      /* Trigger value for hose open, in percent, -1 == disable */
-  int   trigger_value;
+    unsigned long   calibrated_max;
+    unsigned long   calibrated_min;
+    /* Trigger value for hose open, in percent, -1 == disable */
+    int   trigger_value;
     /* Duration in seconds of hose open */
-  unsigned int   water_duration;
+    unsigned int   water_duration;
     /* Trigger watering at least this often */
-  unsigned long   water_interval;
+    unsigned long   water_interval;
     /* Time of last watering */
-  unsigned long   last_triggered[64];
+    unsigned long   last_triggered[64];
     /* Last/current sensor reading */
-  int   current_value;
+    int   current_value;
 };
 
 
