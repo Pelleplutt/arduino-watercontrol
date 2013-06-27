@@ -137,12 +137,12 @@ void setup() {
 
     strcpy(monitors[0].name, "Port a0");
     strcpy(monitors[1].name, "Port a1");
-    strcpy(monitors[2].name, "Port b2");
-    strcpy(monitors[3].name, "Port b3");
-    strcpy(monitors[4].name, "Port c4");
-    strcpy(monitors[5].name, "Port c5");
-    strcpy(monitors[6].name, "Port d6");
-    strcpy(monitors[7].name, "Port d7");
+    strcpy(monitors[2].name, "Port a2");
+    strcpy(monitors[3].name, "Port a3");
+    strcpy(monitors[4].name, "Port b0");
+    strcpy(monitors[5].name, "Port b1");
+    strcpy(monitors[6].name, "Port b2");
+    strcpy(monitors[7].name, "Port b3");
 
     for(int i = 0; i < 8; i++) {
         /* Given the current hardware and limitations we will
