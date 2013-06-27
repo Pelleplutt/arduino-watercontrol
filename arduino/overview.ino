@@ -37,13 +37,23 @@ void drawOverview() {
 /*******************************************************************************/
 void handleOverviewInput(int button) {
     switch(button) {
-        case 0: 
+        case BUTTON_0: 
             {
                 monitor_selection = (++monitor_selection) % 8;
                 draw();
                 break;
             }
-        case 2: 
+        case BUTTON_1: 
+            {
+                if(monitor_selection) {
+                    monitor_selection--;
+                } else {
+                    monitor_selection = 7;
+                }
+                draw();
+                break;
+            }
+        case BUTTON_3: 
             {
                 switchScreen(SCREEN_LOG);
             }

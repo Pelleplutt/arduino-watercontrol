@@ -10,12 +10,12 @@ void drawLog() {
 /*******************************************************************************/
 void handleLogInput(int button) {
     switch(button) {
-        case 0: 
+        case BUTTON_0: 
             {
                 draw();
                 break;
             }
-        case 2: 
+        case BUTTON_3: 
             {
 
                 switchScreen(SCREEN_CONFIG);

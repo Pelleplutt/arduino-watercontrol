@@ -2,6 +2,7 @@
 
 char configmenu[8][12] = {"Name", "Calibrate", "Water", "Trigger", "Manual", "Enabled", "Measure", "Interval"};
 int config_selection = 0;
+int active_config = -1;
 
 /*******************************************************************************/
 char config_edit_name[NAME_MAX_LEN + 1];
@@ -50,7 +51,24 @@ void drawConfigName() {
 void handleConfigNameInput(int button) {
     int slen = strlen(config_edit_name);
     switch(button) {
-        case 0: 
+        case BUTTON_0: 
+            {
+                config_alphabet_pos = (++config_alphabet_pos) % strlen(config_alphabet);
+                drawConfigEditName();
+                break;
+            }
+        case BUTTON_1: 
+            {
+                if(config_alphabet_pos) {
+                    config_alphabet_pos--;
+                } else {
+                    config_alphabet_pos = strlen(config_alphabet) - 1;
+
+                }
+                drawConfigEditName();
+                break;
+            }
+        case BUTTON_2: 
             {
                 if(config_alphabet[config_alphabet_pos] == 0x7f) {
                     if(slen > 0) {
@@ -67,13 +85,7 @@ void handleConfigNameInput(int button) {
                 drawConfigEditName();
                 break;
             }
-        case 1: 
-            {
-                config_alphabet_pos = (++config_alphabet_pos) % strlen(config_alphabet);
-                drawConfigEditName();
-                break;
-            }
-        case 2: 
+        case BUTTON_3: 
             {
                 config_selection = 0;
                 draw();
@@ -377,15 +389,25 @@ void drawConf() {
 /*******************************************************************************/
 void handleConfInput(int button) {
 
-    if(config_selection >= 0) {
+    if(active_config == -1) {
         switch(button) {
-            case 0: 
+            case BUTTON_0: 
                 {
                     config_selection = (++config_selection) % 8;
                     draw();
                     break;
                 }
-            case 1: 
+            case BUTTON_1: 
+                {
+                    if(config_selection) {
+                        config_selection--;
+                    } else {
+                        config_selection = 7;
+                    }
+                    draw();
+                    break;
+                }
+            case BUTTON_2: 
                 {
                     switch(config_selection) {
                         case 0:
@@ -408,45 +430,45 @@ void handleConfInput(int button) {
                             break;
 
                     }
-                    config_selection = -1 - config_selection;
+                    active_config = config_selection;
 
                     break;
                 }
-            case 2: 
+            case BUTTON_3: 
                 {
                     switchScreen(SCREEN_OVERVIEW);
                     break;
                 }
         }
     }else {
-        switch(config_selection) 
+        switch(active_config) 
         {
-            case -1: 
+            case 0: 
                 {
                     handleConfigNameInput(button);
                     break;
                 }
-            case -3: 
+            case 2: 
                 {
                     handleConfigWaterInput(button);
                     break;
                 }
-            case -4: 
+            case 3: 
                 {
                     handleConfigTriggerInput(button);
                     break;
                 }
-            case -5: 
+            case 4: 
                 {
                     handleConfigManualInput(button);
                     break;
                 }
-            case -6: 
+            case 5: 
                 {
                     handleConfigEnabledInput(button);
                     break;
                 }
-            case -8: 
+            case 6: 
                 {
                     handleConfigIntervalInput(button);
                     break;
