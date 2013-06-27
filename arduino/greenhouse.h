@@ -19,6 +19,11 @@
 #   define DEBUGLN(a) 
 #endif
 
+#define BUTTON_0 0
+#define BUTTON_1 1
+#define BUTTON_2 2
+#define BUTTON_3 3
+
 #define DISPLAY_Y_MIDDLE  4
 #define DISPLAY_X_MIDDLE  11
 
