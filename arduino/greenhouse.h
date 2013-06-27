@@ -1,9 +1,9 @@
 #ifndef GREENHOUSE_H_INCLUDED
 #define GREENHOUSE_H_INCLUDED 1
 
+#include <glcd_Config.h>
 #include <glcd.h>
 #include <glcd_Buildinfo.h>
-#include <glcd_watercontrol.h>
 
 #include "fonts/SystemFont5x7.h"
 

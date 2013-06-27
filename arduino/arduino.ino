@@ -1,6 +1,6 @@
+#include <glcd_Config.h>
 #include <glcd.h>
 #include <glcd_Buildinfo.h>
-#include <glcd_watercontrol.h>
 
 #include "greenhouse.h"
 #include "ports.h"
