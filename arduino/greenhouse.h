@@ -9,6 +9,16 @@
 
 #define BUTTON_DELAY  150
 
+#define SERIAL_DEBUG 1
+
+#ifdef SERIAL_DEBUG
+#   define DEBUG(a) Serial.print(a)
+#   define DEBUGLN(a) Serial.println(a)
+#else
+#   define DEBUG(a) 
+#   define DEBUGLN(a) 
+#endif
+
 #define DISPLAY_Y_MIDDLE  4
 #define DISPLAY_X_MIDDLE  11
 

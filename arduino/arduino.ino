@@ -97,9 +97,9 @@ void drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibr
 /*******************************************************************************/
 void setup() {
 
+#ifdef SERIAL_DEBUG
   Serial.begin(9600);
-
-  pinMode(13, OUTPUT);
+#endif
 
     /* Setup ports for water control */
   pinMode(PORT_RELAY0, OUTPUT);
@@ -200,6 +200,10 @@ void switchScreen(int screen) {
 
 /*******************************************************************************/
 void handleInput(int button) {
+
+    DEBUG("Input: ");
+    DEBUGLN(button);
+
   switch(current_screen) {
     case SCREEN_OVERVIEW: {
       handleOverviewInput(button);
@@ -219,8 +223,6 @@ void handleInput(int button) {
 
 /*******************************************************************************/
 void loop() {
-
-
 
     /* Failsafe */
   if(millis() < last_button_read) {
