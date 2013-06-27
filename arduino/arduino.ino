@@ -145,12 +145,17 @@ void setup() {
     strcpy(monitors[7].name, "Port b3");
 
     for(int i = 0; i < 8; i++) {
+
         /* Given the current hardware and limitations we will
            max out at around 7000 when the sensors are shorted */
         monitors[i].calibrated_max = 7000;
+
         /* The sensors will idle at around 48hz when in open
            air */
         monitors[i].calibrated_min = 48;
+
+        /* Default to water for 3s once we turn the switch on */
+        monitors[i].water_duration = 30;
 
         monitors[i].enabled = 1;
     }
