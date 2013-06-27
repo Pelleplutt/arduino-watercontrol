@@ -57,6 +57,8 @@ void changeWaterPort(unsigned char monitor, unsigned char state) {
 /*******************************************************************************/
 int getSensorValue(int value, unsigned long calibrated_min, unsigned long calibrated_max) {
     if(value >= 0) {
+        if(value < calibrated_min)
+            value = calibrated_min;
         value -= calibrated_min;
         calibrated_max -= calibrated_min;
         unsigned long percent = value * 100 / calibrated_max;
