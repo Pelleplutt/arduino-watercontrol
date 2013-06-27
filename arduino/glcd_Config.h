@@ -64,7 +64,7 @@
   * autoconfig includes - (comment this out if using manual configurations, see below)
   */
 //#include "config/ks0108_Panel.h"          // automatically configure library for a ks0108 panel
-#include "ks0108_watercontrol.h"   // automatically configure library for a ks0108 192x64 panel
+#include "config/ks0108_watercontrol.h"   // automatically configure library for a ks0108 192x64 panel
 
 /*
  * If you want to explicitly select a manual configuration, you can edit the desired manual configuration

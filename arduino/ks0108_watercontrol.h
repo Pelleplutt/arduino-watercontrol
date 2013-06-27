@@ -7,7 +7,7 @@
  *
 */
 
-#ifndef GLCD_PANEL_CONFIG_H
+#ifndef GLCD_PANEL_CONFIG_HH
 #define GLCD_PANEL_CONFIG_H
 
 /*
@@ -45,29 +45,26 @@
 
 /* Data pin definitions
  */
-#define glcdData0Pin        PORT_DISPLAY_DB0
-#define glcdData1Pin        PORT_DISPLAY_DB1
-#define glcdData2Pin        PORT_DISPLAY_DB2
-#define glcdData3Pin        PORT_DISPLAY_DB3
-#define glcdData4Pin        PORT_DISPLAY_DB4
-#define glcdData5Pin        PORT_DISPLAY_DB5
-#define glcdData6Pin        PORT_DISPLAY_DB6
-#define glcdData7Pin        PORT_DISPLAY_DB7
+#define glcdData0Pin        22
+#define glcdData1Pin        24
+#define glcdData2Pin        26
+#define glcdData3Pin        28
+#define glcdData4Pin        30
+#define glcdData5Pin        32
+#define glcdData6Pin        34
+#define glcdData7Pin        36
 
 /* Arduino pins used for Commands
  * default assignment uses the first five analog pins
  */
-#define glcdCSEL1        PORT_DISPLAY_CS1
-#define glcdCSEL2        PORT_DISPLAY_CS2
-// uncomment the following if more than two chip select pins are needed
-//#define glcdCSEL3        3   // third chip select line on pin 3 if needed
-//#define glcdCSEL4        2   // fourth chip select if needed
+#define glcdCSEL1        40
+#define glcdCSEL2        38
 
-#define glcdRW            PORT_DISPLAY_RW
-#define glcdDI            PORT_DISPLAY_DI
-#define glcdEN            PORT_DISPLAY_E
-// Reset Bit  - uncomment the next line if reset is connected to an output pin
-#define glcdRES           PORT_DISPLAY_RST    // Reset Bit
+#define glcdRW            44
+#define glcdDI            46
+#define glcdEN            48
+// Reset Bit
+//#define glcdRES           42    // Reset Bit
 
 /*
  * the following is the calculation of the number of chips - do not change
@@ -86,73 +83,14 @@
 #define NBR_CHIP_SELECT_PINS   2 // the number of chip select pins required for this panel
 
 /*
- * The following conditional statements determine the relationship between the chip select
- * pins and the physical chips.
- * If the chips are displayed in the wrong order, you can swap the glcd_CHIPx defines
- */
-
-/*
  * Defines for Panels using two Chip Select pins
  */
-#if  NBR_CHIP_SELECT_PINS == 2
 
 /*
  * Two Chip panels using two select pins (the most common panel type)
  */
-#if glcd_CHIP_COUNT == 2
 #define glcd_CHIP0 glcdCSEL1,HIGH,   glcdCSEL2,LOW
 #define glcd_CHIP1 glcdCSEL1,LOW,    glcdCSEL2,HIGH
-
-/*
- * Three Chip panel using two select pins
- */
-#elif  glcd_CHIP_COUNT == 3
-
-#define glcd_CHIP0  glcdCSEL1,LOW,  glcdCSEL2,LOW
-#define glcd_CHIP1  glcdCSEL1,LOW,  glcdCSEL2,HIGH
-#define glcd_CHIP2  glcdCSEL1,HIGH, glcdCSEL2,LOW
-
-/*
- * Four Chip panel using two select pins
- */
-#elif  glcd_CHIP_COUNT == 4
-#define glcd_CHIP0  glcdCSEL1,LOW,  glcdCSEL2,LOW
-#define glcd_CHIP1  glcdCSEL1,HIGH, glcdCSEL2,LOW
-#define glcd_CHIP2  glcdCSEL1,HIGH, glcdCSEL2,HIGH
-#define glcd_CHIP3  glcdCSEL1,LOW,  glcdCSEL2,HIGH
-#endif
-
-/*
- * Defines for Two Chip panels using one Chip Select pin
- */
-#elif  (NBR_CHIP_SELECT_PINS == 1 && glcd_CHIP_COUNT == 2)
-#define glcd_CHIP0  glcdCSEL1,LOW
-#define glcd_CHIP1  glcdCSEL1,HIGH
-
-/*
- * Defines for Three Chip panels using three select pins
- */
-#elif (NBR_CHIP_SELECT_PINS == 3 && glcd_CHIP_COUNT == 3)
-#define glcd_CHIP0  glcdCSEL1,HIGH, glcdCSEL2,LOW,  glcdCSEL3,LOW
-#define glcd_CHIP1  glcdCSEL1,LOW,  glcdCSEL2,HIGH, glcdCSEL3,LOW
-#define glcd_CHIP2  glcdCSEL1,LOW,  glcdCSEL2,LOW,  glcdCSEL3,HIGH
-
-/*
- * Defines for Four Chip panel using four select pins
- */
-#elif  (NBR_CHIP_SELECT_PINS == 4 && glcd_CHIP_COUNT == 4)
-#define glcd_CHIP0  glcdCSEL1,HIGH, glcdCSEL2,LOW,  glcdCSEL3,LOW,  glcdCSEL4,LOW
-#define glcd_CHIP1  glcdCSEL1,LOW,  glcdCSEL2,HIGH, glcdCSEL3,LOW,  glcdCSEL4,LOW
-#define glcd_CHIP2  glcdCSEL1,LOW,  glcdCSEL2,LOW,  glcdCSEL3,HIGH, glcdCSEL4,LOW
-#define glcd_CHIP3  glcdCSEL1,LOW,  glcdCSEL2,LOW,  glcdCSEL3,LOW,  glcdCSEL4,HIGH
-
-/*
- * Here if the Number of Chip Selects is not supported for the selected panel size and chip size
- */
-#else
-#error "The number of Chips and Chip Select pins does not match an option in ks0108_Panel.h"
-#error "Check that the number of Chip Select pins is correct for the configured panel size"
-#endif
 
 /*********************************************************/
 /*  End of Chip Select Configuration                     */
