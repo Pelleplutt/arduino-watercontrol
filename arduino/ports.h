@@ -3,8 +3,8 @@
 #ifndef PORT_H_INCLUDED
 #define PORT_H_INCLUDED 1
 
-#define PORT_BTN0   18
-#define PORT_BTN1   19
+#define PORT_BTN0   19
+#define PORT_BTN1   18
 #define PORT_BTN2   20
 #define PORT_BTN3   21
 
@@ -16,8 +16,8 @@
 #define PORT_DISPLAY_DB5  32
 #define PORT_DISPLAY_DB6  34
 #define PORT_DISPLAY_DB7  36
-#define PORT_DISPLAY_CS2  38
-#define PORT_DISPLAY_CS1  40
+#define PORT_DISPLAY_CS2  40
+#define PORT_DISPLAY_CS1  38
 #define PORT_DISPLAY_RST  42
 #define PORT_DISPLAY_RW   44
 #define PORT_DISPLAY_DI   46
