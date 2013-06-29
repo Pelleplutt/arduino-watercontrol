@@ -10,6 +10,7 @@ char config_alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvxyz0123
 char config_alphabet_pos;
 
 void drawConfigEditName() {
+    GLCD.SelectFont(System5x7, BLACK);
     GLCD.SetFontColor(BLACK);
     GLCD.EraseTextLine(0);
     GLCD.print(config_edit_name);
@@ -44,6 +45,7 @@ void initConfigName() {
 }
 
 void drawConfigName() {
+    GLCD.SelectFont(Arial_bold_14, BLACK);
     GLCD.CursorTo(0, 0);
     GLCD.print(monitors[monitor_selection].name);
 }
@@ -278,6 +280,7 @@ void handleConfigTriggerInput(int button) {
 char  config_edit_enabled;
 
 void _drawConfigEditEnabled(char value) {
+    GLCD.SelectFont(Arial_bold_14, BLACK);
     GLCD.EraseTextLine(0);
     if(value == 0) {
         GLCD.print("Disabled");
@@ -363,7 +366,7 @@ void handleConfigManualInput(int button) {
 
 /*******************************************************************************/
 void drawConf() {
-    GLCD.SelectFont(System5x7, BLACK);
+    GLCD.SetFontColor(BLACK);
     GLCD.EraseTextLine(0);
     GLCD.EraseTextLine(1);
     GLCD.EraseTextLine(2);
@@ -386,6 +389,7 @@ void drawConf() {
             drawConfigInterval();
             break;
     }
+    GLCD.SelectFont(System5x7, BLACK);
 
 
     for(int i = 0; i < 8; i++) {
