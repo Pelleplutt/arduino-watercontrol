@@ -6,6 +6,7 @@
 #include <glcd_Buildinfo.h>
 
 #include "fonts/SystemFont5x7.h"
+#include "fonts/Arial_bold_14.h"
 
 #define BUTTON_DELAY  150
 

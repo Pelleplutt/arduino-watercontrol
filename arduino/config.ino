@@ -240,7 +240,7 @@ void drawConfigTrigger() {
 
 void handleConfigTriggerInput(int button) {
     switch(button) {
-        case 0: 
+        case BUTTON_0: 
             {
                 if(config_edit_trigger == 99) {
                     config_edit_trigger = -1;
@@ -250,12 +250,22 @@ void handleConfigTriggerInput(int button) {
                 drawConfigEditTrigger();
                 break;
             }
-        case 1: 
+        case BUTTON_1: 
+            {
+                if(config_edit_trigger == 1) {
+                    config_edit_trigger = 100;
+                } else {
+                    config_edit_trigger = (++config_edit_trigger) % 100;
+                }
+                drawConfigEditTrigger();
+                break;
+            }
+        case BUTTON_2: 
             {
                 monitors[monitor_selection].trigger_value = config_edit_trigger;
                 /* No break */  
             }
-        case 2: 
+        case BUTTON_3: 
             {
                 active_config = -1;
                 draw();
@@ -313,11 +323,12 @@ void handleConfigEnabledInput(int button) {
 
 /*******************************************************************************/
 void _drawConfigManual(unsigned char value) {
+    GLCD.SelectFont(Arial_bold_14, BLACK);
     GLCD.EraseTextLine(0);
     if(value) {
-        GLCD.print("Close");
+        GLCD.print("Opened");
     } else {
-        GLCD.print("Open");
+        GLCD.print("Closed");
     }
 }
 
@@ -331,17 +342,16 @@ void drawConfigManual() {
 
 void handleConfigManualInput(int button) {
     switch(button) {
-        case 0: 
+        case BUTTON_0: 
+        case BUTTON_1:
+
             {
                 monitors[monitor_selection].water_state ^= 1;
-                drawConfigManual();
+                _drawConfigManual(monitors[monitor_selection].water_state);
                 changeWaterPort(monitor_selection, monitors[monitor_selection].water_state);
                 break;
             }
-        case 1: 
-            {
-            }
-        case 2: 
+        case BUTTON_2: 
             {
                 active_config = -1;
                 draw();
