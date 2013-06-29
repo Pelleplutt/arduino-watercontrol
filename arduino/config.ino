@@ -304,18 +304,19 @@ void drawConfigEnabled() {
 
 void handleConfigEnabledInput(int button) {
     switch(button) {
-        case 0: 
+        case BUTTON_0: 
+        case BUTTON_1: 
             {
                 config_edit_enabled ^= 1;
                 drawConfigEditEnabled();
                 break;
             }
-        case 1: 
+        case BUTTON_2:
             {
                 monitors[monitor_selection].enabled = config_edit_enabled;
                 /* No break */  
             }
-        case 2: 
+        case BUTTON_3: 
             {
                 active_config = -1;
                 draw();
@@ -354,7 +355,7 @@ void handleConfigManualInput(int button) {
                 changeWaterPort(monitor_selection, monitors[monitor_selection].water_state);
                 break;
             }
-        case BUTTON_2: 
+        case BUTTON_3: 
             {
                 active_config = -1;
                 draw();
