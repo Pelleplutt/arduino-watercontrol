@@ -363,6 +363,48 @@ void handleConfigManualInput(int button) {
             }
     }
 }
+/*******************************************************************************/
+void
+drawConfigMeasure(bool measuring) {
+    GLCD.SelectFont(Arial_bold_14, BLACK);
+    GLCD.EraseTextLine(0);
+    if(measuring) {
+        GLCD.print("Sensing...");
+    } else {
+        GLCD.print("Triggers: ");
+        GLCD.print(monitors[monitor_selection].current_value);
+    }
+
+    drawSensorBar(monitors[monitor_selection].current_value, 
+            monitors[monitor_selection].calibrated_min, 
+            monitors[monitor_selection].calibrated_max);
+}
+
+void
+initConfigMeasure() {
+    drawConfigMeasure(true);
+    measure(monitor_selection);
+    drawConfigMeasure(false);
+}
+
+void
+handleConfigMeasureInput(int button) {
+    switch(button) {
+        case BUTTON_0: 
+        case BUTTON_1:
+        case BUTTON_2:
+
+            {
+                break;
+            }
+        case BUTTON_3: 
+            {
+                active_config = -1;
+                draw();
+                break;
+            }
+    }
+}
 
 
 /*******************************************************************************/
@@ -454,6 +496,9 @@ void handleConfInput(int button) {
                         case 5:
                             initConfigEnabled();
                             break;
+                        case 6:
+                            initConfigMeasure();
+                            break;
                         case 7:
                             initConfigInterval();
                             break;
@@ -501,6 +546,11 @@ void handleConfInput(int button) {
                     break;
                 }
             case 6: 
+                {
+                    handleConfigMeasureInput(button);
+                    break;
+                }
+            case 7: 
                 {
                     handleConfigIntervalInput(button);
                     break;
