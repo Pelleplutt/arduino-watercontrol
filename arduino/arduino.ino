@@ -88,11 +88,11 @@ void drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibr
         GLCD.PutChar('%');
 
 
-        GLCD.FillRect(0, 10, GLCD.Width - 1, 10, WHITE);
-        GLCD.DrawRect(0, 10, GLCD.Width - 1, 10, BLACK);
-        GLCD.FillRect(0, 10, pixels, 10, BLACK);
+        GLCD.FillRect(0, 20, GLCD.Width - 1, 10, WHITE);
+        GLCD.DrawRect(0, 20, GLCD.Width - 1, 10, BLACK);
+        GLCD.FillRect(0, 20, pixels, 10, BLACK);
     } else {
-        GLCD.FillRect(0, 10, GLCD.Width - 1, 10, WHITE);
+        GLCD.FillRect(0, 20, GLCD.Width - 1, 10, WHITE);
     }
 }
 
