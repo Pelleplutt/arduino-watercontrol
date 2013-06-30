@@ -57,8 +57,8 @@
 /* Arduino pins used for Commands
  * default assignment uses the first five analog pins
  */
-#define glcdCSEL1        40
-#define glcdCSEL2        38
+#define glcdCSEL1        38
+#define glcdCSEL2        40
 
 #define glcdRW            44
 #define glcdDI            46
