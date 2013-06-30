@@ -186,7 +186,7 @@ void drawConfigInterval() {
 
 void handleConfigIntervalInput(int button) {
     switch(button) {
-        case 0: 
+        case BUTTON_0: 
             {
                 if(config_edit_water_interval < MAX_WATER_INTERVAL) {
                     if(config_edit_water_interval >= 6 * 3600) {
@@ -200,12 +200,26 @@ void handleConfigIntervalInput(int button) {
                 drawConfigEditInterval();
                 break;
             }
-        case 1: 
+        case BUTTON_1: 
+            {
+                if(config_edit_water_interval == 0) {
+                    config_edit_water_interval = MAX_WATER_INTERVAL;
+                }else {
+                    if(config_edit_water_interval > 6 * 3600) {
+                        config_edit_water_interval -= 6 * 3600;
+                    } else {
+                        config_edit_water_interval -= 15 * 60;
+                    }
+                }
+                drawConfigEditInterval();
+                break;
+            }
+        case BUTTON_2: 
             {
                 monitors[monitor_selection].water_interval = config_edit_water_interval;
                 /* No break */  
             }
-        case 2: 
+        case BUTTON_3: 
             {
                 active_config = -1;
                 draw();
