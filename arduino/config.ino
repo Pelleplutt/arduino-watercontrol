@@ -344,7 +344,8 @@ void _drawConfigManual(unsigned char value) {
     GLCD.SelectFont(Arial_bold_14, BLACK);
     GLCD.EraseTextLine(0);
     if(value) {
-        GLCD.print("Opened");
+        GLCD.print("Opened for ");
+        GLCD.print(timeString((unsigned long)MANUAL_WATER_OPEN_TIME));
     } else {
         GLCD.print("Closed");
     }
@@ -366,7 +367,7 @@ void handleConfigManualInput(int button) {
             {
                 monitors[monitor_selection].water_state ^= 1;
                 _drawConfigManual(monitors[monitor_selection].water_state);
-                changeWaterPort(monitor_selection, monitors[monitor_selection].water_state);
+                changeWaterPort(monitor_selection, monitors[monitor_selection].water_state, MANUAL_WATER_OPEN_TIME);
                 break;
             }
         case BUTTON_3: 

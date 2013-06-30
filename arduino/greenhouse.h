@@ -38,31 +38,46 @@
 
 #define SENSE_VALUE_INVALID -1
 
+#define WATER_OPEN 1
+#define WATER_CLOSED 0
+
+#define MANUAL_WATER_OPEN_TIME (15 * 60)
 typedef struct monitor {
     char  name[NAME_MAX_LEN + 1];
 
     /* Enabled or disabled */
     char  enabled;
-    /* Open/closed */  
-    unsigned char  water_state;
     /* Connected to what port */
     char water_port;
 
     /* Calibrated wet sensor value */
     unsigned long   calibrated_max;
     unsigned long   calibrated_min;
+
+    /* Duration in seconds of hose open at trigger*/
+    unsigned int   water_duration;
+
     /* Trigger value for hose open, in percent, -1 == disable */
     unsigned char   trigger_value;
-    /* Duration in seconds of hose open */
-    unsigned int   water_duration;
-    /* Trigger watering at least this often */
+    /* Trigger watering at least this often, if used then the trigger value is
+     * not used */
     unsigned long   water_interval;
-    /* The last time the interval timer triggered watering */
-    unsigned long   last_water_interval_trigger;
+
+    /* The last millis() / 1000 we opened the port */
+    unsigned long   last_water_open;
+
     /* Time of last watering */
     unsigned long   last_triggered[64];
+
     /* Last/current sensor reading */
     int   current_value;
+
+    /* Open/closed */  
+    unsigned char  water_state;
+    /* The millis()/1000 we opened the water control */
+    unsigned long water_opened_at;
+    /* The duration in seconds to keep the water open for */
+    unsigned long water_open_for;
 };
 
 
