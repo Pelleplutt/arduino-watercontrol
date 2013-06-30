@@ -5,8 +5,8 @@
 #include <glcd.h>
 #include <glcd_Buildinfo.h>
 
-#include "fonts/SystemFont5x7.h"
-#include "fonts/Arial_bold_14.h"
+#include <fonts/SystemFont5x7.h>
+#include <fonts/Arial_bold_14.h>
 
 #define BUTTON_DELAY  150
 
@@ -36,6 +36,8 @@
 #define MAX_WATER_DURATION 1800
 #define MAX_WATER_INTERVAL (7 * 86400)
 
+#define SENSE_VALUE_INVALID -1
+
 typedef struct monitor {
     char  name[NAME_MAX_LEN + 1];
 
@@ -50,7 +52,7 @@ typedef struct monitor {
     unsigned long   calibrated_max;
     unsigned long   calibrated_min;
     /* Trigger value for hose open, in percent, -1 == disable */
-    int   trigger_value;
+    unsigned char   trigger_value;
     /* Duration in seconds of hose open */
     unsigned int   water_duration;
     /* Trigger watering at least this often */
@@ -84,6 +86,8 @@ void drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibr
 int getSensorValue(int value, unsigned long calibrated_min, unsigned long calibrated_max);
 
 void changeWaterPort(unsigned char monitor, unsigned char state);
+
+unsigned int measure(unsigned char monitor);
 
 
 #endif
