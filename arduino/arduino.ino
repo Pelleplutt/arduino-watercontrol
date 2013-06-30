@@ -9,6 +9,10 @@
 
 unsigned long last_button_read = 0;
 
+    /* The last millis() we redrawed the overview screen. Use this for auto
+     * refreshing the overview screen */
+unsigned long last_overview_redraw = 0;
+
   /* Currently selected monitor from first screen */
 int monitor_selection = 0;
 
@@ -188,6 +192,7 @@ void draw() {
         case SCREEN_OVERVIEW: 
             {
                 drawOverview();
+                last_overview_redraw = millis();
                 break;
             }
         case SCREEN_LOG: 
@@ -241,25 +246,33 @@ void handleInput(int button) {
 /*******************************************************************************/
 void loop() {
 
+    unsigned long now = millis();
+
     /* Failsafe */
-    if(millis() < last_button_read) {
-        last_button_read = 0;
+    if(now < last_button_read) {
+        last_button_read = now;
     }
 
-    if(millis() - last_button_read > BUTTON_DELAY) {
+    if(now - last_button_read > BUTTON_DELAY) {
         if(digitalRead(PORT_BTN0) == HIGH) {
             handleInput(0);
-            last_button_read = millis();
+            last_button_read = now;
         }else if(digitalRead(PORT_BTN1) == HIGH) {
             handleInput(1);
-            last_button_read = millis();
+            last_button_read = now;
         }else if(digitalRead(PORT_BTN2) == HIGH) {
             handleInput(2);
-            last_button_read = millis();
+            last_button_read = now;
         }else if(digitalRead(PORT_BTN3) == HIGH) {
             handleInput(3);
-            last_button_read = millis();
+            last_button_read = now;
         }
     }
 
+    if(current_screen == SCREEN_OVERVIEW) {
+            /* Redraw the screen every second */
+        if(now - last_overview_redraw >= 1000) {
+            draw();
+        }
+    }
 }

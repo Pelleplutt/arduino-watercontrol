@@ -10,8 +10,26 @@ void drawOverview() {
             GLCD.EraseTextLine(0);
             GLCD.print(monitors[i].name);
 
+            if(monitors[i].water_interval == 0) {
+                drawSensorBar(monitors[i].current_value, monitors[i].calibrated_min, monitors[i].calibrated_max);
+            } else {
+                unsigned long seconds_since;
+                GLCD.CursorTo(0, 1);
+                GLCD.print("Every ");
+                GLCD.print(timeString(monitors[i].water_interval));
 
-            drawSensorBar(monitors[i].current_value, monitors[i].calibrated_min, monitors[i].calibrated_max);
+                GLCD.CursorTo(0, 2);
+                GLCD.print("Next in ");
+
+                seconds_since = (millis() - monitors[i].last_water_interval_trigger) / 1000;
+                if(seconds_since >= monitors[i].water_interval) {
+                    GLCD.print("NO TIME");
+                } else {
+                    GLCD.print(timeString(monitors[i].water_interval - seconds_since));
+                }
+
+
+            }
             GLCD.SetFontColor(WHITE);
         }
 

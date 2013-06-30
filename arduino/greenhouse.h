@@ -57,6 +57,8 @@ typedef struct monitor {
     unsigned int   water_duration;
     /* Trigger watering at least this often */
     unsigned long   water_interval;
+    /* The last time the interval timer triggered watering */
+    unsigned long   last_water_interval_trigger;
     /* Time of last watering */
     unsigned long   last_triggered[64];
     /* Last/current sensor reading */
