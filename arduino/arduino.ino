@@ -9,6 +9,10 @@
 
 unsigned long last_button_read = 0;
 
+    /* Current time cached to keep it consistent in the iteration */
+unsigned long now;
+unsigned long now_s;
+
     /* The last millis() we redrawed the overview screen. Use this for auto
      * refreshing the overview screen */
 unsigned long last_overview_redraw = 0;
@@ -246,7 +250,8 @@ void handleInput(int button) {
 /*******************************************************************************/
 void loop() {
 
-    unsigned long now = millis();
+    now = millis();
+    now_s = now / 1000;
 
     /* Failsafe */
     if(now < last_button_read) {

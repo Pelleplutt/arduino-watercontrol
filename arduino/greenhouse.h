@@ -68,6 +68,11 @@ typedef struct monitor {
 
 extern int monitor_selection;
 
+    /* We cache these from the main loop as some timing routines will depend
+     * upon time being consistent throughout our iteration */
+extern unsigned long now;
+extern unsigned long now_s;
+
   /* Currently displaying screen in the application */
 extern int current_screen;
 extern monitor  monitors[8];
