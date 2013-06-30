@@ -4,7 +4,7 @@
 
 #include "greenhouse.h"
 #include "ports.h"
-#include "fonts/SystemFont5x7.h"
+#include <fonts/SystemFont5x7.h>
 
 
 unsigned long last_button_read = 0;
@@ -71,6 +71,7 @@ int getSensorValue(int value, unsigned long calibrated_min, unsigned long calibr
 
 /*******************************************************************************/
 void drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibrated_max) {
+    GLCD.SelectFont(System5x7, BLACK);
     if(value >= 0) {
 
         int percent = getSensorValue(value, calibrated_min, calibrated_max);
