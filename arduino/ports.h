@@ -32,12 +32,14 @@
 #define PORT_RELAY6  35
 #define PORT_RELAY7  37
 
-#define PORT_SENSE0_S   2
+#define PORT_SENSE0_INT 1
+#define PORT_SENSE0_S   3
 #define PORT_SENSE0_A0  43
 #define PORT_SENSE0_A1  45
 #define PORT_SENSE0_E   47
 
-#define PORT_SENSE1_S   3
+#define PORT_SENSE1_INT 0
+#define PORT_SENSE1_S   2
 #define PORT_SENSE1_A0  49
 #define PORT_SENSE1_A1  51
 #define PORT_SENSE1_E   53
