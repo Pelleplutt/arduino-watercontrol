@@ -158,6 +158,9 @@ void setup() {
         /* Default to water for 3s once we turn the switch on */
         monitors[i].water_duration = 30;
 
+        /* Set current value to invalid */
+        monitors[i].current_value = SENSE_VALUE_INVALID;
+
         monitors[i].enabled = 1;
     }
 
