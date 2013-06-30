@@ -259,6 +259,7 @@ void loop() {
 
     now = millis();
     now_s = now / 1000;
+    unsigned char i;
 
     /* Failsafe */
     if(now < last_button_read) {
@@ -278,6 +279,44 @@ void loop() {
         }else if(digitalRead(PORT_BTN3) == HIGH) {
             handleInput(3);
             last_button_read = now;
+        }
+    }
+
+    unsigned char open_ports = 0;
+
+    for(i = 0; i < 8; i++) {
+        if(monitors[i].water_state == WATER_CLOSED) {
+            if(monitors[i].water_interval > 0) {
+                unsigned long seconds_since = now_s - monitors[i].last_water_open;
+
+                if(open_ports < MAX_OPEN_WATER_PORTS) {
+                    if(seconds_since > monitors[i].water_interval) {
+                        changeWaterPort(i, WATER_OPEN, monitors[i].water_duration);
+                        open_ports++;
+                    }
+                }
+            }
+        }else {
+            open_ports++;
+
+                /* Did the timer wrap ? attempt to recover */
+            if(monitors[i].water_opened_at > now_s) {
+                    /* First, adjust how much "millis" we had left when opened */
+                unsigned long time_before_wrap = MILLIS_MAX / 1000 - monitors[i].water_opened_at;
+                    /* Then reset open until now and reduce open time with time until wrap */
+                monitors[i].water_opened_at = 0;
+                    /* Failsafe this ... */
+                if(monitors[i].water_open_for < time_before_wrap) {
+                    monitors[i].water_open_for = 0;
+                } else {
+                    monitors[i].water_open_for = monitors[i].water_open_for - time_before_wrap;
+                }
+            }
+
+            if(now_s >= (monitors[i].water_opened_at + monitors[i].water_open_for)) {
+                changeWaterPort(i, WATER_CLOSED, 0);
+                open_ports--;
+            }
         }
     }
 

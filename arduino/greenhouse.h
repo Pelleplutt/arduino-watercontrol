@@ -42,6 +42,12 @@
 #define WATER_CLOSED 0
 
 #define MANUAL_WATER_OPEN_TIME (15 * 60)
+
+#define MAX_OPEN_WATER_PORTS 3
+
+    /* FIXME DO WE HAVE A MAX define somewhere ...? */
+#define MILLIS_MAX 4294967295
+
 typedef struct monitor {
     char  name[NAME_MAX_LEN + 1];
 
