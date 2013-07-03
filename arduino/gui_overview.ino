@@ -3,20 +3,19 @@
 /*******************************************************************************/
 void
 drawOverview() {
+    GLCD.ClearScreen();
 
     GLCD.SelectFont(System5x7, BLACK);
     for(int i = 0; i < 8; i++) {
 
         if(i == monitor_selection) {
-            GLCD.EraseTextLine(1);
-            GLCD.EraseTextLine(0);
+            GLCD.CursorTo(0, 0);
             GLCD.print(monitors[i].name);
 
             if(monitors[i].water_state == WATER_OPEN) {
                 GLCD.CursorTo(0, 1);
                 GLCD.print("OPEN");
 
-                GLCD.EraseTextLine(2);
                 GLCD.CursorTo(0, 2);
                 GLCD.print("Close in ");
 
@@ -37,7 +36,6 @@ drawOverview() {
                     GLCD.print("Every ");
                     GLCD.print(timeString(monitors[i].water_interval));
 
-                    GLCD.EraseTextLine(2);
                     GLCD.CursorTo(0, 2);
                     GLCD.print("Next in ");
 

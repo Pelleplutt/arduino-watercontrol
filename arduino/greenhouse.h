@@ -51,6 +51,8 @@
 
 #define MONITOR_LOG_COUNT 17
 
+#define SENSOR_MEASURE_INTERVAL (60 * 10)
+
     /* FIXME DO WE HAVE A MAX define somewhere ...? */
 #define MILLIS_MAX 4294967295
 
@@ -98,7 +100,10 @@ typedef struct monitor {
     /* Time of last waterings */
     water_log   log[MONITOR_LOG_COUNT];
 
-    /* Last/current sensor reading */
+    /* millis()/1000 of last time we read the sensor */
+    unsigned long last_sensor_read;
+    /* Last/current sensor reading as the number of triggers triggered during
+     * last read (during a 1s run)*/
     int   current_value;
 
     /* Open/closed */

@@ -609,10 +609,7 @@ handleConfigCalibrateInput(int button) {
 void
 drawConfig1() {
     GLCD.SetFontColor(BLACK);
-    GLCD.EraseTextLine(0);
-    GLCD.EraseTextLine(1);
-    GLCD.EraseTextLine(2);
-    GLCD.EraseTextLine(3);
+    GLCD.ClearScreen();
 
     switch(config_selection) {
         case 0:

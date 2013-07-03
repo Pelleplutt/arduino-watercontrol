@@ -268,6 +268,17 @@ handleInput(int button) {
     }
 }
 
+void
+showMonitorAction(char monitor, char *action) {
+    GLCD.ClearScreen();
+    GLCD.DrawRect(0, 0, GLCD.Width - 1, GLCD.Height - 1, BLACK);
+    GLCD.SelectFont(Arial_bold_14, BLACK);
+    GLCD.CursorTo(1, 1);
+    GLCD.print(monitors[monitor].name);
+    GLCD.CursorTo(1, 2);
+    GLCD.print(action);
+}
+
 /*******************************************************************************/
 void
 loop() {
@@ -299,15 +310,37 @@ loop() {
 
     unsigned char open_ports = 0;
 
-    for(i = 0; i < 8; i++) {
-        if(monitors[i].water_state == WATER_CLOSED) {
-            if(monitors[i].water_interval > 0) {
-                unsigned long seconds_since = now_s - monitors[i].last_water_open;
+    char needs_redraw = 0;
 
-                if(open_ports < MAX_OPEN_WATER_PORTS) {
-                    if(seconds_since > monitors[i].water_interval) {
-                        changeWaterPort(i, WATER_OPEN, monitors[i].water_duration, OPEN_MODE_INTERVAL);
+    for(i = 0; i < 8; i++) {
+        monitor *mon = &monitors[i];
+        if(mon->water_state == WATER_CLOSED) {
+            if(mon->enabled && open_ports < MAX_OPEN_WATER_PORTS) {
+                if(mon->water_interval > 0) {
+                    unsigned long seconds_since = now_s - mon->last_water_open;
+
+                    if(seconds_since > mon->water_interval) {
+                        showMonitorAction(i, "Open Interval");
+                        changeWaterPort(i, WATER_OPEN, mon->water_duration, OPEN_MODE_INTERVAL);
+                        delay(2000);
                         open_ports++;
+                    }
+                        /* Only do a sensor reading if we have proper
+                         * calibrated values and a trigger value */
+                } else if(mon->trigger_value && mon->calibrated_min && mon->calibrated_max) {
+                    unsigned long seconds_since = now_s - mon->last_sensor_read;
+
+                    if(seconds_since > SENSOR_MEASURE_INTERVAL || mon->last_sensor_read == 0) {
+                        showMonitorAction(i, "Sensing...");
+                        measure(i, false);
+                        mon->last_sensor_read = now_s;
+
+                        if(getSensorCalibratedPercent(mon->current_value, mon->calibrated_min, mon->calibrated_max) > mon->trigger_value) {
+                            showMonitorAction(i, "Open sensed");
+                            changeWaterPort(i, WATER_OPEN, mon->water_duration, OPEN_MODE_SENSOR);
+                            open_ports++;
+                            delay(2000);
+                        }
                     }
                 }
             }
@@ -315,21 +348,23 @@ loop() {
             open_ports++;
 
                 /* Did the timer wrap ? attempt to recover */
-            if(monitors[i].water_opened_at > now_s) {
+            if(mon->water_opened_at > now_s) {
                     /* First, adjust how much "millis" we had left when opened */
-                unsigned long time_before_wrap = MILLIS_MAX / 1000 - monitors[i].water_opened_at;
+                unsigned long time_before_wrap = MILLIS_MAX / 1000 - mon->water_opened_at;
                     /* Then reset open until now and reduce open time with time until wrap */
-                monitors[i].water_opened_at = 0;
+                mon->water_opened_at = 0;
                     /* Failsafe this ... */
-                if(monitors[i].water_open_for < time_before_wrap) {
-                    monitors[i].water_open_for = 0;
+                if(mon->water_open_for < time_before_wrap) {
+                    mon->water_open_for = 0;
                 } else {
-                    monitors[i].water_open_for = monitors[i].water_open_for - time_before_wrap;
+                    mon->water_open_for = mon->water_open_for - time_before_wrap;
                 }
             }
 
-            if(now_s >= (monitors[i].water_opened_at + monitors[i].water_open_for)) {
+            if(now_s >= (mon->water_opened_at + mon->water_open_for)) {
+                showMonitorAction(i, "Close");
                 changeWaterPort(i, WATER_CLOSED, 0, 0);
+                delay(2000);
                 open_ports--;
             }
         }
@@ -338,7 +373,11 @@ loop() {
     if(current_screen == SCREEN_OVERVIEW || current_screen == SCREEN_LOG) {
             /* Redraw the screen every second */
         if(now - last_auto_redraw >= 1000) {
-            draw();
+            needs_redraw = 1;
         }
+    }
+
+    if(needs_redraw) {
+        draw();
     }
 }
