@@ -30,7 +30,7 @@
 
 #define SCREEN_OVERVIEW  0
 #define SCREEN_LOG 1
-#define SCREEN_CONFIG 2
+#define SCREEN_CONFIG1 2
 
 #define NAME_MAX_LEN 10
 #define MAX_WATER_DURATION 1800

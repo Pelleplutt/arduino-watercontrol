@@ -569,7 +569,7 @@ handleConfigCalibrateInput(int button) {
 }
 
 /*******************************************************************************/
-void drawConf() {
+void drawConfig1() {
     GLCD.SetFontColor(BLACK);
     GLCD.EraseTextLine(0);
     GLCD.EraseTextLine(1);
@@ -622,7 +622,7 @@ void drawConf() {
 }
 
 /*******************************************************************************/
-void handleConfInput(int button) {
+void handleConfig1Input(int button) {
 
     if(active_config == -1) {
         switch(button) {

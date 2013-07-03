@@ -18,7 +18,7 @@ void handleLogInput(int button) {
         case BUTTON_3: 
             {
 
-                switchScreen(SCREEN_CONFIG);
+                switchScreen(SCREEN_CONFIG1);
             }
     }
 }

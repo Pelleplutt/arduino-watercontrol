@@ -212,9 +212,9 @@ void draw() {
                 drawLog();
                 break;
             }
-        case SCREEN_CONFIG: 
+        case SCREEN_CONFIG1: 
             {
-                drawConf();
+                drawConfig1();
                 break;
             }
     }
@@ -246,9 +246,9 @@ void handleInput(int button) {
                 handleLogInput(button);
                 break;
             }
-        case SCREEN_CONFIG: 
+        case SCREEN_CONFIG1: 
             {
-                handleConfInput(button);
+                handleConfig1Input(button);
                 break;
             }
 
