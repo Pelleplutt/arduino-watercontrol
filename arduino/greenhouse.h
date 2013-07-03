@@ -49,6 +49,8 @@
 #define OPEN_MODE_SENSOR 'S'
 #define OPEN_MODE_INTERVAL 'I'
 
+#define MONITOR_LOG_COUNT 17
+
     /* FIXME DO WE HAVE A MAX define somewhere ...? */
 #define MILLIS_MAX 4294967295
 
@@ -87,7 +89,7 @@ typedef struct monitor {
 
     unsigned char current_log;
     /* Time of last waterings */
-    water_log   log[17];
+    water_log   log[MONITOR_LOG_COUNT];
 
     /* Last/current sensor reading */
     int   current_value;
