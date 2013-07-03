@@ -543,7 +543,11 @@ handleConfigCalibrateInput(int button) {
             switch(config_calibrate_state) {
                 case 6:
                     monitors[monitor_selection].calibrated_min = config_calibrate_low;
-                    monitors[monitor_selection].calibrated_min = config_calibrate_high;
+                    monitors[monitor_selection].calibrated_max = config_calibrate_high;
+
+                    config_calibrate_state = -1;
+                    active_config = -1;
+                    draw();
 
                     break;
 
