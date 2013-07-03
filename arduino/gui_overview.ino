@@ -8,11 +8,11 @@ drawOverview() {
     for(int i = 0; i < 8; i++) {
 
         if(i == monitor_selection) {
+            GLCD.EraseTextLine(1);
             GLCD.EraseTextLine(0);
             GLCD.print(monitors[i].name);
 
             if(monitors[i].water_state == WATER_OPEN) {
-                GLCD.EraseTextLine(1);
                 GLCD.CursorTo(0, 1);
                 GLCD.print("OPEN");
 
@@ -25,12 +25,14 @@ drawOverview() {
                 GLCD.print(timeString((monitors[i].water_opened_at + monitors[i].water_open_for) - now_s));
 
             } else {
-                if(monitors[i].water_interval == 0) {
+                if(!monitors[i].enabled) {
+                    GLCD.CursorTo(0, 1);
+                    GLCD.print("Disabled");
+                } else if(monitors[i].water_interval == 0) {
                     drawSensorBar(monitors[i].current_value, monitors[i].calibrated_min, monitors[i].calibrated_max);
                 } else {
                     unsigned long seconds_since;
 
-                    GLCD.EraseTextLine(1);
                     GLCD.CursorTo(0, 1);
                     GLCD.print("Every ");
                     GLCD.print(timeString(monitors[i].water_interval));
