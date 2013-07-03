@@ -2,6 +2,13 @@
 
 
 char *
+relativeTimeString(unsigned long when) {
+    when = now_s - when;
+    return timeString(when);
+
+}
+
+char *
 timeString(unsigned long seconds) {
     static char buf[32];
     int len = 0;

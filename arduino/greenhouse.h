@@ -143,6 +143,9 @@ drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibrated_
 char 
 *timeString(int seconds);
 
+char *
+relativeTimeString(unsigned long when);
+
     /* WATER */
 void 
 changeWaterPort(unsigned char monitor, unsigned char state);
