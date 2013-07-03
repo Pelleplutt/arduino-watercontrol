@@ -45,8 +45,21 @@
 
 #define MAX_OPEN_WATER_PORTS 3
 
+#define OPEN_MODE_MANUAL 'M'
+#define OPEN_MODE_SENSOR 'S'
+#define OPEN_MODE_INTERVAL 'I'
+
     /* FIXME DO WE HAVE A MAX define somewhere ...? */
 #define MILLIS_MAX 4294967295
+
+typedef struct water_log {
+        /* millis() / 1000 time of open */
+    unsigned long time;
+        /* OPEN_MODE_* */
+    char open_mode; 
+        /* Duration in seconds of openness */
+    unsigned int duration;
+};
 
 typedef struct monitor {
     char  name[NAME_MAX_LEN + 1];
@@ -72,8 +85,9 @@ typedef struct monitor {
     /* The last millis() / 1000 we opened the port */
     unsigned long   last_water_open;
 
-    /* Time of last watering */
-    unsigned long   last_triggered[64];
+    unsigned char current_log;
+    /* Time of last waterings */
+    water_log   log[17];
 
     /* Last/current sensor reading */
     int   current_value;

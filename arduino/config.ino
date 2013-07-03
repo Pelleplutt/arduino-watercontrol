@@ -367,7 +367,7 @@ void handleConfigManualInput(int button) {
             {
                 monitors[monitor_selection].water_state ^= 1;
                 _drawConfigManual(monitors[monitor_selection].water_state);
-                changeWaterPort(monitor_selection, monitors[monitor_selection].water_state, MANUAL_WATER_OPEN_TIME);
+                changeWaterPort(monitor_selection, monitors[monitor_selection].water_state, MANUAL_WATER_OPEN_TIME, OPEN_MODE_MANUAL);
                 break;
             }
         case BUTTON_3: 

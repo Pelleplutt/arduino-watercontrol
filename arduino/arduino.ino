@@ -53,7 +53,8 @@ char *timeString(unsigned long seconds) {
     return buf;
 }
 
-void changeWaterPort(unsigned char monitor, unsigned char state, unsigned long open_time) {
+void 
+changeWaterPort(unsigned char monitor, unsigned char state, unsigned long open_time, char mode) {
     if(state == WATER_OPEN) {
         digitalWrite(monitors[monitor].water_port, HIGH);
         monitors[monitor].water_state = state;
@@ -291,7 +292,7 @@ void loop() {
 
                 if(open_ports < MAX_OPEN_WATER_PORTS) {
                     if(seconds_since > monitors[i].water_interval) {
-                        changeWaterPort(i, WATER_OPEN, monitors[i].water_duration);
+                        changeWaterPort(i, WATER_OPEN, monitors[i].water_duration, OPEN_MODE_INTERVAL);
                         open_ports++;
                     }
                 }
@@ -314,7 +315,7 @@ void loop() {
             }
 
             if(now_s >= (monitors[i].water_opened_at + monitors[i].water_open_for)) {
-                changeWaterPort(i, WATER_CLOSED, 0);
+                changeWaterPort(i, WATER_CLOSED, 0, 0);
                 open_ports--;
             }
         }
