@@ -1,7 +1,8 @@
 #include "greenhouse.h"
 
 /*******************************************************************************/
-void drawOverview() {
+void
+drawOverview() {
 
     GLCD.SelectFont(System5x7, BLACK);
     for(int i = 0; i < 8; i++) {
@@ -70,15 +71,16 @@ void drawOverview() {
 
 
 /*******************************************************************************/
-void handleOverviewInput(int button) {
+void
+handleOverviewInput(int button) {
     switch(button) {
-        case BUTTON_0: 
+        case BUTTON_0:
             {
                 monitor_selection = (++monitor_selection) % 8;
                 draw();
                 break;
             }
-        case BUTTON_1: 
+        case BUTTON_1:
             {
                 if(monitor_selection) {
                     monitor_selection--;
@@ -88,7 +90,7 @@ void handleOverviewInput(int button) {
                 draw();
                 break;
             }
-        case BUTTON_3: 
+        case BUTTON_3:
             {
                 switchScreen(SCREEN_LOG);
             }

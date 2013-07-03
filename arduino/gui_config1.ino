@@ -9,7 +9,8 @@ char config_edit_name[NAME_MAX_LEN + 1];
 char config_alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvxyz0123456789., \x7e\x7f";
 char config_alphabet_pos;
 
-void drawConfigEditName() {
+void
+drawConfigEditName() {
     GLCD.SelectFont(System5x7, BLACK);
     GLCD.SetFontColor(BLACK);
     GLCD.EraseTextLine(0);
@@ -29,7 +30,7 @@ void drawConfigEditName() {
             ch = alen + ch;
         } else if (ch >= alen) {
             ch = ch - alen;
-        }  
+        }
         GLCD.PutChar(config_alphabet[ch]);
     }
     GLCD.SetFontColor(WHITE);
@@ -38,28 +39,31 @@ void drawConfigEditName() {
 
 }
 
-void initConfigName() {
+void
+initConfigName() {
     strcpy(config_edit_name, monitors[monitor_selection].name);
     config_alphabet_pos = strlen(config_alphabet) - 1;
-    drawConfigEditName(); 
+    drawConfigEditName();
 }
 
-void drawConfigName() {
+void
+drawConfigName() {
     GLCD.SelectFont(Arial_bold_14, BLACK);
     GLCD.CursorTo(0, 0);
     GLCD.print(monitors[monitor_selection].name);
 }
 
-void handleConfigNameInput(int button) {
+void
+handleConfigNameInput(int button) {
     int slen = strlen(config_edit_name);
     switch(button) {
-        case BUTTON_0: 
+        case BUTTON_0:
             {
                 config_alphabet_pos = (++config_alphabet_pos) % strlen(config_alphabet);
                 drawConfigEditName();
                 break;
             }
-        case BUTTON_1: 
+        case BUTTON_1:
             {
                 if(config_alphabet_pos) {
                     config_alphabet_pos--;
@@ -70,7 +74,7 @@ void handleConfigNameInput(int button) {
                 drawConfigEditName();
                 break;
             }
-        case BUTTON_2: 
+        case BUTTON_2:
             {
                 if(config_alphabet[config_alphabet_pos] == 0x7f) {
                     if(slen > 0) {
@@ -82,12 +86,12 @@ void handleConfigNameInput(int button) {
                     draw();
                 } else if(slen < NAME_MAX_LEN) {
                     config_edit_name[slen] = config_alphabet[config_alphabet_pos];
-                    config_edit_name[slen + 1] = '\0'; 
+                    config_edit_name[slen + 1] = '\0';
                 }
                 drawConfigEditName();
                 break;
             }
-        case BUTTON_3: 
+        case BUTTON_3:
             {
                 active_config = -1;
                 draw();
@@ -99,24 +103,28 @@ void handleConfigNameInput(int button) {
 /*******************************************************************************/
 unsigned int config_edit_water_duration;
 
-void drawConfigEditWater() {
+void
+drawConfigEditWater() {
     GLCD.EraseTextLine(0);
     GLCD.print(timeString((unsigned long)config_edit_water_duration));
 }
 
-void initConfigWater() {
+void
+initConfigWater() {
     config_edit_water_duration = monitors[monitor_selection].water_duration;
-    drawConfigEditWater(); 
+    drawConfigEditWater();
 }
 
-void drawConfigWater() {
+void
+drawConfigWater() {
     GLCD.EraseTextLine(0);
     GLCD.print(timeString((unsigned long)monitors[monitor_selection].water_duration));
 }
 
-void handleConfigWaterInput(int button) {
+void
+handleConfigWaterInput(int button) {
     switch(button) {
-        case BUTTON_0: 
+        case BUTTON_0:
             {
                 if(config_edit_water_duration < MAX_WATER_DURATION) {
                     if(config_edit_water_duration >= 180) {
@@ -130,7 +138,7 @@ void handleConfigWaterInput(int button) {
                 drawConfigEditWater();
                 break;
             }
-        case BUTTON_1: 
+        case BUTTON_1:
             {
                 if(config_edit_water_duration > 0) {
                     if(config_edit_water_duration >= 180) {
@@ -144,12 +152,12 @@ void handleConfigWaterInput(int button) {
                 drawConfigEditWater();
                 break;
             }
-        case BUTTON_2: 
+        case BUTTON_2:
             {
                 monitors[monitor_selection].water_duration = config_edit_water_duration;
-                /* No break */  
+                /* No break */
             }
-        case BUTTON_3: 
+        case BUTTON_3:
             {
                 active_config = -1;
                 draw();
@@ -161,7 +169,8 @@ void handleConfigWaterInput(int button) {
 /*******************************************************************************/
 unsigned long  config_edit_water_interval;
 
-void drawConfigEditInterval() {
+void
+drawConfigEditInterval() {
     GLCD.EraseTextLine(0);
     if(config_edit_water_interval == 0) {
         GLCD.print("OFF");
@@ -170,12 +179,14 @@ void drawConfigEditInterval() {
     }
 }
 
-void initConfigInterval() {
+void
+initConfigInterval() {
     config_edit_water_interval = monitors[monitor_selection].water_interval;
-    drawConfigEditInterval(); 
+    drawConfigEditInterval();
 }
 
-void drawConfigInterval() {
+void
+drawConfigInterval() {
     GLCD.EraseTextLine(0);
     if(monitors[monitor_selection].water_interval == 0) {
         GLCD.print("OFF");
@@ -184,9 +195,10 @@ void drawConfigInterval() {
     }
 }
 
-void handleConfigIntervalInput(int button) {
+void
+handleConfigIntervalInput(int button) {
     switch(button) {
-        case BUTTON_0: 
+        case BUTTON_0:
             {
                 if(config_edit_water_interval < MAX_WATER_INTERVAL) {
                     if(config_edit_water_interval >= 6 * 3600) {
@@ -200,7 +212,7 @@ void handleConfigIntervalInput(int button) {
                 drawConfigEditInterval();
                 break;
             }
-        case BUTTON_1: 
+        case BUTTON_1:
             {
                 if(config_edit_water_interval == 0) {
                     config_edit_water_interval = MAX_WATER_INTERVAL;
@@ -214,12 +226,12 @@ void handleConfigIntervalInput(int button) {
                 drawConfigEditInterval();
                 break;
             }
-        case BUTTON_2: 
+        case BUTTON_2:
             {
                 monitors[monitor_selection].water_interval = config_edit_water_interval;
-                /* No break */  
+                /* No break */
             }
-        case BUTTON_3: 
+        case BUTTON_3:
             {
                 active_config = -1;
                 draw();
@@ -231,7 +243,8 @@ void handleConfigIntervalInput(int button) {
 /*******************************************************************************/
 int  config_edit_trigger;
 
-void _drawConfigEditTrigger(int value) {
+void
+_drawConfigEditTrigger(int value) {
     GLCD.EraseTextLine(0);
     if(value == -1) {
         GLCD.print("OFF");
@@ -241,22 +254,26 @@ void _drawConfigEditTrigger(int value) {
     }
 }
 
-void drawConfigEditTrigger() {
+void
+drawConfigEditTrigger() {
     _drawConfigEditTrigger(config_edit_trigger);
 }
 
-void initConfigTrigger() {
+void
+initConfigTrigger() {
     config_edit_trigger = monitors[monitor_selection].trigger_value;
-    drawConfigEditTrigger(); 
+    drawConfigEditTrigger();
 }
 
-void drawConfigTrigger() {
+void
+drawConfigTrigger() {
     _drawConfigEditTrigger(monitors[monitor_selection].trigger_value);
 }
 
-void handleConfigTriggerInput(int button) {
+void
+handleConfigTriggerInput(int button) {
     switch(button) {
-        case BUTTON_0: 
+        case BUTTON_0:
             {
                 if(config_edit_trigger == 99) {
                     config_edit_trigger = -1;
@@ -266,7 +283,7 @@ void handleConfigTriggerInput(int button) {
                 drawConfigEditTrigger();
                 break;
             }
-        case BUTTON_1: 
+        case BUTTON_1:
             {
                 if(config_edit_trigger == 1) {
                     config_edit_trigger = 100;
@@ -276,12 +293,12 @@ void handleConfigTriggerInput(int button) {
                 drawConfigEditTrigger();
                 break;
             }
-        case BUTTON_2: 
+        case BUTTON_2:
             {
                 monitors[monitor_selection].trigger_value = config_edit_trigger;
-                /* No break */  
+                /* No break */
             }
-        case BUTTON_3: 
+        case BUTTON_3:
             {
                 active_config = -1;
                 draw();
@@ -293,7 +310,8 @@ void handleConfigTriggerInput(int button) {
 /*******************************************************************************/
 char  config_edit_enabled;
 
-void _drawConfigEditEnabled(char value) {
+void
+_drawConfigEditEnabled(char value) {
     GLCD.SelectFont(Arial_bold_14, BLACK);
     GLCD.EraseTextLine(0);
     if(value == 0) {
@@ -303,23 +321,27 @@ void _drawConfigEditEnabled(char value) {
     }
 }
 
-void drawConfigEditEnabled() {
+void
+drawConfigEditEnabled() {
     _drawConfigEditEnabled(config_edit_enabled);
 }
 
-void initConfigEnabled() {
+void
+initConfigEnabled() {
     config_edit_enabled = monitors[monitor_selection].enabled;
-    drawConfigEditEnabled(); 
+    drawConfigEditEnabled();
 }
 
-void drawConfigEnabled() {
+void
+drawConfigEnabled() {
     _drawConfigEditEnabled(monitors[monitor_selection].enabled);
 }
 
-void handleConfigEnabledInput(int button) {
+void
+handleConfigEnabledInput(int button) {
     switch(button) {
-        case BUTTON_0: 
-        case BUTTON_1: 
+        case BUTTON_0:
+        case BUTTON_1:
             {
                 config_edit_enabled ^= 1;
                 drawConfigEditEnabled();
@@ -328,9 +350,9 @@ void handleConfigEnabledInput(int button) {
         case BUTTON_2:
             {
                 monitors[monitor_selection].enabled = config_edit_enabled;
-                /* No break */  
+                /* No break */
             }
-        case BUTTON_3: 
+        case BUTTON_3:
             {
                 active_config = -1;
                 draw();
@@ -340,7 +362,8 @@ void handleConfigEnabledInput(int button) {
 }
 
 /*******************************************************************************/
-void _drawConfigManual(unsigned char value) {
+void
+_drawConfigManual(unsigned char value) {
     GLCD.SelectFont(Arial_bold_14, BLACK);
     GLCD.EraseTextLine(0);
     if(value) {
@@ -351,17 +374,20 @@ void _drawConfigManual(unsigned char value) {
     }
 }
 
-void initConfigManual() {
-    drawConfigManual(); 
+void
+initConfigManual() {
+    drawConfigManual();
 }
 
-void drawConfigManual() {
+void
+drawConfigManual() {
     _drawConfigManual(monitors[monitor_selection].water_state);
 }
 
-void handleConfigManualInput(int button) {
+void
+handleConfigManualInput(int button) {
     switch(button) {
-        case BUTTON_0: 
+        case BUTTON_0:
         case BUTTON_1:
 
             {
@@ -370,7 +396,7 @@ void handleConfigManualInput(int button) {
                 changeWaterPort(monitor_selection, monitors[monitor_selection].water_state, MANUAL_WATER_OPEN_TIME, OPEN_MODE_MANUAL);
                 break;
             }
-        case BUTTON_3: 
+        case BUTTON_3:
             {
                 active_config = -1;
                 draw();
@@ -391,8 +417,8 @@ drawConfigMeasure(bool measuring) {
         GLCD.print(monitors[monitor_selection].current_value);
     }
 
-    drawSensorBar(monitors[monitor_selection].current_value, 
-            monitors[monitor_selection].calibrated_min, 
+    drawSensorBar(monitors[monitor_selection].current_value,
+            monitors[monitor_selection].calibrated_min,
             monitors[monitor_selection].calibrated_max);
 }
 
@@ -406,14 +432,14 @@ initConfigMeasure() {
 void
 handleConfigMeasureInput(int button) {
     switch(button) {
-        case BUTTON_0: 
+        case BUTTON_0:
         case BUTTON_1:
         case BUTTON_2:
 
             {
                 break;
             }
-        case BUTTON_3: 
+        case BUTTON_3:
             {
                 active_config = -1;
                 draw();
@@ -488,7 +514,7 @@ drawConfigCalibrate() {
             break;
 
         default:
-            _drawConfigCalibrateHighLow(monitors[monitor_selection].calibrated_max, 
+            _drawConfigCalibrateHighLow(monitors[monitor_selection].calibrated_max,
                     monitors[monitor_selection].calibrated_min);
     }
 }
@@ -537,7 +563,7 @@ handleConfigCalibrateInput(int button) {
                     break;
 
             }
-            
+
             break;
         case BUTTON_2:
             switch(config_calibrate_state) {
@@ -558,7 +584,7 @@ handleConfigCalibrateInput(int button) {
                     break;
             }
             break;
-        case BUTTON_3: 
+        case BUTTON_3:
             {
                 config_calibrate_state = -1;
                 active_config = -1;
@@ -569,13 +595,14 @@ handleConfigCalibrateInput(int button) {
 }
 
 /*******************************************************************************/
-void drawConfig1() {
+void
+drawConfig1() {
     GLCD.SetFontColor(BLACK);
     GLCD.EraseTextLine(0);
     GLCD.EraseTextLine(1);
     GLCD.EraseTextLine(2);
     GLCD.EraseTextLine(3);
-  
+
     switch(config_selection) {
         case 0:
             drawConfigName();
@@ -618,21 +645,22 @@ void drawConfig1() {
         if(i == config_selection) {
             GLCD.SetFontColor(BLACK);
         }
-    }    
+    }
 }
 
 /*******************************************************************************/
-void handleConfig1Input(int button) {
+void
+handleConfig1Input(int button) {
 
     if(active_config == -1) {
         switch(button) {
-            case BUTTON_0: 
+            case BUTTON_0:
                 {
                     config_selection = (++config_selection) % 8;
                     draw();
                     break;
                 }
-            case BUTTON_1: 
+            case BUTTON_1:
                 {
                     if(config_selection) {
                         config_selection--;
@@ -642,7 +670,7 @@ void handleConfig1Input(int button) {
                     draw();
                     break;
                 }
-            case BUTTON_2: 
+            case BUTTON_2:
                 {
                     switch(config_selection) {
                         case 0:
@@ -675,16 +703,16 @@ void handleConfig1Input(int button) {
 
                     break;
                 }
-            case BUTTON_3: 
+            case BUTTON_3:
                 {
                     switchScreen(SCREEN_OVERVIEW);
                     break;
                 }
         }
     }else {
-        switch(active_config) 
+        switch(active_config)
         {
-            case 0: 
+            case 0:
                 {
                     handleConfigNameInput(button);
                     break;
@@ -694,32 +722,32 @@ void handleConfig1Input(int button) {
                     handleConfigCalibrateInput(button);
                     break;
                 }
-            case 2: 
+            case 2:
                 {
                     handleConfigWaterInput(button);
                     break;
                 }
-            case 3: 
+            case 3:
                 {
                     handleConfigTriggerInput(button);
                     break;
                 }
-            case 4: 
+            case 4:
                 {
                     handleConfigManualInput(button);
                     break;
                 }
-            case 5: 
+            case 5:
                 {
                     handleConfigEnabledInput(button);
                     break;
                 }
-            case 6: 
+            case 6:
                 {
                     handleConfigMeasureInput(button);
                     break;
                 }
-            case 7: 
+            case 7:
                 {
                     handleConfigIntervalInput(button);
                     break;
@@ -727,5 +755,3 @@ void handleConfig1Input(int button) {
         }
     }
 }
-
-

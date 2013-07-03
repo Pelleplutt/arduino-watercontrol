@@ -16,8 +16,8 @@
 #   define DEBUG(a) Serial.print(a)
 #   define DEBUGLN(a) Serial.println(a)
 #else
-#   define DEBUG(a) 
-#   define DEBUGLN(a) 
+#   define DEBUG(a)
+#   define DEBUGLN(a)
 #endif
 
 #define BUTTON_0 0
@@ -56,7 +56,7 @@ typedef struct water_log {
         /* millis() / 1000 time of open */
     unsigned long time;
         /* OPEN_MODE_* */
-    char open_mode; 
+    char open_mode;
         /* Duration in seconds of openness */
     unsigned int duration;
 };
@@ -92,7 +92,7 @@ typedef struct monitor {
     /* Last/current sensor reading */
     int   current_value;
 
-    /* Open/closed */  
+    /* Open/closed */
     unsigned char  water_state;
     /* The millis()/1000 we opened the water control */
     unsigned long water_opened_at;

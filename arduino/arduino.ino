@@ -25,7 +25,8 @@ int current_screen = SCREEN_OVERVIEW;
 monitor  monitors[8];
 
 /*******************************************************************************/
-char *timeString(unsigned long seconds) {
+char *
+timeString(unsigned long seconds) {
     static char buf[32];
     int len = 0;
 
@@ -53,14 +54,19 @@ char *timeString(unsigned long seconds) {
     return buf;
 }
 
-void 
+void
 changeWaterPort(unsigned char monitor, unsigned char state, unsigned long open_time, char mode) {
     if(state == WATER_OPEN) {
         digitalWrite(monitors[monitor].water_port, HIGH);
+
         monitors[monitor].water_state = state;
         monitors[monitor].water_opened_at = millis() / 1000;
         monitors[monitor].water_open_for = open_time;
         monitors[monitor].last_water_open = monitors[monitor].water_opened_at;
+
+
+
+
             /* FIXME Write to log */
     } else if(state == WATER_CLOSED) {
         digitalWrite(monitors[monitor].water_port, LOW);
@@ -71,7 +77,8 @@ changeWaterPort(unsigned char monitor, unsigned char state, unsigned long open_t
 }
 
 /*******************************************************************************/
-int getSensorValue(int value, unsigned long calibrated_min, unsigned long calibrated_max) {
+int
+getSensorValue(int value, unsigned long calibrated_min, unsigned long calibrated_max) {
     if(value >= 0) {
         if(value < calibrated_min)
             value = calibrated_min;
@@ -86,7 +93,8 @@ int getSensorValue(int value, unsigned long calibrated_min, unsigned long calibr
 }
 
 /*******************************************************************************/
-void drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibrated_max) {
+void
+drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibrated_max) {
     GLCD.SelectFont(System5x7, BLACK);
     if(value >= 0) {
 
@@ -114,7 +122,8 @@ void drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibr
 
 
 /*******************************************************************************/
-void setup() {
+void
+setup() {
 
 #ifdef SERIAL_DEBUG
     Serial.begin(9600);
@@ -199,20 +208,21 @@ void setup() {
 
 
 /*******************************************************************************/
-void draw() {
+void
+draw() {
     switch(current_screen) {
-        case SCREEN_OVERVIEW: 
+        case SCREEN_OVERVIEW:
             {
                 drawOverview();
                 last_overview_redraw = millis();
                 break;
             }
-        case SCREEN_LOG: 
+        case SCREEN_LOG:
             {
                 drawLog();
                 break;
             }
-        case SCREEN_CONFIG1: 
+        case SCREEN_CONFIG1:
             {
                 drawConfig1();
                 break;
@@ -221,7 +231,8 @@ void draw() {
 }
 
 /*******************************************************************************/
-void switchScreen(int screen) {
+void
+switchScreen(int screen) {
     GLCD.ClearScreen();
     current_screen = screen;
     draw();
@@ -230,23 +241,24 @@ void switchScreen(int screen) {
 
 
 /*******************************************************************************/
-void handleInput(int button) {
+void
+handleInput(int button) {
 
     DEBUG("Input: ");
     DEBUGLN(button);
 
     switch(current_screen) {
-        case SCREEN_OVERVIEW: 
+        case SCREEN_OVERVIEW:
             {
                 handleOverviewInput(button);
                 break;
             }
-        case SCREEN_LOG: 
+        case SCREEN_LOG:
             {
                 handleLogInput(button);
                 break;
             }
-        case SCREEN_CONFIG1: 
+        case SCREEN_CONFIG1:
             {
                 handleConfig1Input(button);
                 break;
@@ -256,7 +268,8 @@ void handleInput(int button) {
 }
 
 /*******************************************************************************/
-void loop() {
+void
+loop() {
 
     now = millis();
     now_s = now / 1000;

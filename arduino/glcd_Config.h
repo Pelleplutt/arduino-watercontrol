@@ -1,7 +1,7 @@
 /*
  * glcd_Config.h - User specific configuration for Arduino GLCD library
  *
- * This file is shipped to automatically configure the library for a 
+ * This file is shipped to automatically configure the library for a
  * 128x64 ks0108 panel using the wiring described in the documentation.
  *
  * Use this file to select the active glcd configuration file
@@ -22,7 +22,7 @@
   * Select 1 and only 1 configuration file.
   *
   * The "AutoConfig" configuration files will configure the library based on a set of
-  * pre-customized configurations for the supported Arduino board type. 
+  * pre-customized configurations for the supported Arduino board type.
   *
   * These configurations match the the panel configurations and wiring diagrams
   * in the library documentation based on the type of board selected in the Arduino IDE
@@ -33,7 +33,7 @@
   *
   * The auto configuration file (default is named  "config/ks0108_Panel.h") selects the appropriate board
   * pin configuration file based on the current board selection in the Arduino IDE.
-  *   
+  *
   * The auto configuration panel configuration files can be found in the "config" directory, the naming is:
   *  "{PANELNAME}_Panel.h"
   * Where:
@@ -49,7 +49,7 @@
   * would be: "ks0108_Panel.h"
   * The ks0108 pin configuration file for a "Arduino" board would be: "ks0108_Arduino.h"
   * and the pin configuration file for a "Mega": "ks0108_Mega.h"
-  * 
+  *
   */
 
 /***********************************************************************************************************
@@ -72,7 +72,7 @@
  * You can also use these files as a template to make customized copies to hold specific configurations.
  *
  * Remember that to activate your manual configuration you uncomment the #include for the desired file
- * and make sure that all the other config  #includes are commented (including the autoconfig above) 
+ * and make sure that all the other config  #includes are commented (including the autoconfig above)
  */
 
 //#include "config/ks0108_Manual_Config.h"       // generic ks0108 configuration
