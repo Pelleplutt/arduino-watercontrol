@@ -213,8 +213,12 @@ handleConfigIntervalInput(int button) {
             }
         case BUTTON_1:
             {
-                if(config_edit_water_interval == 0) {
-                    config_edit_water_interval = MAX_WATER_INTERVAL;
+                if(config_edit_water_interval < 3 * 60) {
+                    if(config_edit_water_interval > 0) {
+                        config_edit_water_interval = 0;
+                    } else {
+                        config_edit_water_interval = MAX_WATER_INTERVAL;
+                    }
                 }else {
                     if(config_edit_water_interval > 6 * 3600) {
                         config_edit_water_interval -= 6 * 3600;
