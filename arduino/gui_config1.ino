@@ -12,7 +12,6 @@ char config_alphabet_pos;
 void
 drawConfigEditName() {
     GLCD.SelectFont(System5x7, BLACK);
-    GLCD.SetFontColor(BLACK);
     GLCD.EraseTextLine(0);
     GLCD.print(config_edit_name);
     GLCD.CursorTo(strlen(config_edit_name), 0);
