@@ -63,6 +63,13 @@ typedef struct water_log {
     unsigned int duration;
 };
 
+    /* Pad each entry in EEPROM by this much, this will give us some headroom
+     * when changing configuration structure later so we do not cross read
+     * entries. The Mega has 4k of this anyhow so we will be good */
+#define EEPROMBYTES_PER_MONITOR 128 
+    /* Silly magic byte so we know if a valid sensor is saved in the slot */
+#define EEPROM_SENSOR_MAGIC 'V'
+
 typedef struct monitor {
     char  name[NAME_MAX_LEN + 1];
 
@@ -114,9 +121,25 @@ extern unsigned long now_s;
 extern int current_screen;
 extern monitor  monitors[8];
 
+    /* Flag revealing if the current monitor in configuration has changed. If
+     * so save it to eeprom when we exit configuration */
+extern char config_monitor_changed;
+
     /* ARDUINO */
 void 
 draw();
+
+void
+loadMonitor(unsigned char monitornum);
+
+void
+saveMonitor(unsigned char monitornum);
+
+void
+loadMonitors();
+
+void
+saveMonitors();
 
     /* GUI_OVERVIEW */
 void 

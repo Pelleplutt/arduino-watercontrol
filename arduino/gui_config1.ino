@@ -9,6 +9,8 @@ char config_edit_name[NAME_MAX_LEN + 1];
 char config_alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvxyz0123456789., \x7e\x7f";
 char config_alphabet_pos;
 
+char config_monitor_changed = 0;
+
 void
 drawConfigEditName() {
     GLCD.SelectFont(System5x7, BLACK);
@@ -81,6 +83,7 @@ handleConfigNameInput(int button) {
                     }
                 } else if(config_alphabet[config_alphabet_pos] == 0x7e) {
                     strcpy(monitors[monitor_selection].name, config_edit_name);
+                    config_monitor_changed = 1;
                     active_config = -1;
                     draw();
                 } else if(slen < NAME_MAX_LEN) {
@@ -154,6 +157,7 @@ handleConfigWaterInput(int button) {
         case BUTTON_2:
             {
                 monitors[monitor_selection].water_duration = config_edit_water_duration;
+                config_monitor_changed = 1;
                 /* No break */
             }
         case BUTTON_3:
@@ -232,6 +236,7 @@ handleConfigIntervalInput(int button) {
         case BUTTON_2:
             {
                 monitors[monitor_selection].water_interval = config_edit_water_interval;
+                config_monitor_changed = 1;
                 /* No break */
             }
         case BUTTON_3:
@@ -299,6 +304,7 @@ handleConfigTriggerInput(int button) {
         case BUTTON_2:
             {
                 monitors[monitor_selection].trigger_value = config_edit_trigger;
+                config_monitor_changed = 1;
                 /* No break */
             }
         case BUTTON_3:
@@ -353,6 +359,7 @@ handleConfigEnabledInput(int button) {
         case BUTTON_2:
             {
                 monitors[monitor_selection].enabled = config_edit_enabled;
+                config_monitor_changed = 1;
                 /* No break */
             }
         case BUTTON_3:
@@ -575,6 +582,7 @@ handleConfigCalibrateInput(int button) {
                     monitors[monitor_selection].calibrated_max = config_calibrate_high;
 
                     config_calibrate_state = -1;
+                    config_monitor_changed = 1;
                     active_config = -1;
                     draw();
 
@@ -708,6 +716,13 @@ handleConfig1Input(int button) {
                 }
             case BUTTON_3:
                 {
+                    if(config_monitor_changed) {
+                        GLCD.ClearScreen();
+                        GLCD.print("Saving....");
+                        saveMonitor(monitor_selection);
+                        config_monitor_changed = 0;
+                    }
+
                     switchScreen(SCREEN_OVERVIEW);
                     break;
                 }
