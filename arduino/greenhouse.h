@@ -112,24 +112,49 @@ extern unsigned long now_s;
 extern int current_screen;
 extern monitor  monitors[8];
 
-void draw();
+    /* ARDUINO */
+void 
+draw();
 
-void drawOverview();
-void handleOverviewInput(int button);
+    /* GUI_OVERVIEW */
+void 
+drawOverview();
+void 
+handleOverviewInput(int button);
 
-void drawLog();
-void handleLogInput(int button);
+    /* GUI_LOG */
+void 
+drawLog();
+void 
+handleLogInput(int button);
 
-void drawConf();
-void handleConfInput(int button);
+    /* GUI_CONFIG1 */
+void 
+drawConf();
+void 
+handleConfInput(int button);
 
-char *timeString(int seconds);
-void drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibrated_max);
-int getSensorValue(int value, unsigned long calibrated_min, unsigned long calibrated_max);
+void 
+drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibrated_max);
 
-void changeWaterPort(unsigned char monitor, unsigned char state);
+    /* STRINGS */
+char 
+*timeString(int seconds);
 
-unsigned int measure(unsigned char monitor);
+    /* WATER */
+void 
+changeWaterPort(unsigned char monitor, unsigned char state);
+
+    /* MEASURE */
+unsigned int 
+measure(unsigned char monitor);
+
+int 
+getSensorCalibratedPercent(int value, unsigned long calibrated_min, unsigned long calibrated_max);
+
+    /* LOG */
+void
+appendToLog(unsigned char monitor, char mode, unsigned long time);
 
 
 #endif
