@@ -121,11 +121,11 @@ loadMonitor(unsigned char monitornum) {
         /* Default to water for 3s once we turn the switch on */
         mon->water_duration = 30;
 
-        /* Set current value to invalid */
-        mon->current_value = SENSE_VALUE_INVALID;
-
         mon->enabled = 1;
     }
+
+    /* Set current value to invalid */
+    mon->current_value = SENSE_VALUE_INVALID;
 }
 
 void
