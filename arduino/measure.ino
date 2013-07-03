@@ -1,7 +1,7 @@
 #include "greenhouse.h"
 
 
-unsigned char measuring;
+char measuring;
 unsigned long measuring_triggers;
 
 void
@@ -14,6 +14,9 @@ measure(unsigned char monitor, bool void_value) {
     unsigned char a0, a1, enable, sense, interrupt;
     unsigned long measure_dur;
     unsigned long measuring_start;
+
+        /* We are indeed measuring, do not start another one */
+    measuring = 1;
 
     if(monitor < 4) {
         interrupt = PORT_SENSE0_INT;
@@ -49,6 +52,7 @@ measure(unsigned char monitor, bool void_value) {
     if(!void_value) {
         monitors[monitor].current_value = measuring_triggers;
     }
+    measuring = 0;
     return measuring_triggers;
 }
 

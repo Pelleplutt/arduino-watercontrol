@@ -329,7 +329,7 @@ loop() {
                     }
                         /* Only do a sensor reading if we have proper
                          * calibrated values and a trigger value */
-                } else if(mon->trigger_value && mon->calibrated_min && mon->calibrated_max) {
+                } else if(!measuring && mon->trigger_value && mon->calibrated_min && mon->calibrated_max) {
                     unsigned long seconds_since = now_s - mon->last_sensor_read;
 
                     if(seconds_since > SENSOR_MEASURE_INTERVAL || mon->last_sensor_read == 0) {

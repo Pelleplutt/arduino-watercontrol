@@ -130,6 +130,9 @@ extern monitor  monitors[8];
      * so save it to eeprom when we exit configuration */
 extern char config_monitor_changed;
 
+    /* Flag if we are currently probing a sensor value */
+extern char measuring;
+
     /* ARDUINO */
 void 
 draw();

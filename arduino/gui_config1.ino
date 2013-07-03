@@ -434,9 +434,14 @@ drawConfigMeasure(bool measuring) {
 
 void
 initConfigMeasure() {
-    drawConfigMeasure(true);
-    measure(monitor_selection, false);
-    drawConfigMeasure(false);
+    if(!measuring) {
+        drawConfigMeasure(true);
+        measure(monitor_selection, false);
+        drawConfigMeasure(false);
+    } else {
+        active_config = -1;
+        draw();
+    }
 }
 
 void
@@ -540,6 +545,10 @@ initConfigCalibrate() {
 
 void
 handleConfigCalibrateInput(int button) {
+        /* A bit crude, but dont mess up the existing measurements */
+    if(measuring) {
+        return;
+    }
     switch(button) {
         case BUTTON_1:
         case BUTTON_0:
