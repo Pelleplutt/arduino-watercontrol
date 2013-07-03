@@ -70,6 +70,7 @@ loadMonitor(unsigned char monitornum) {
         offset = _eeprom_read_bytes(monitornum, offset, (char*)&mon->calibrated_max,   (unsigned int)sizeof(mon->calibrated_max));
         offset = _eeprom_read_bytes(monitornum, offset, (char*)&mon->trigger_value,    (unsigned int)sizeof(mon->trigger_value));
         offset = _eeprom_read_bytes(monitornum, offset, (char*)&mon->water_interval,   (unsigned int)sizeof(mon->water_interval));
+        offset = _eeprom_read_bytes(monitornum, offset, (char*)&mon->water_duration,   (unsigned int)sizeof(mon->water_duration));
     } else {
 
         /* At some point we might want to disconnect the 1-1
@@ -143,6 +144,7 @@ saveMonitor(unsigned char monitornum) {
     offset = _eeprom_write_bytes(monitornum, offset, (char*)&mon->calibrated_max,   (unsigned int)sizeof(mon->calibrated_max));
     offset = _eeprom_write_bytes(monitornum, offset, (char*)&mon->trigger_value,    (unsigned int)sizeof(mon->trigger_value));
     offset = _eeprom_write_bytes(monitornum, offset, (char*)&mon->water_interval,   (unsigned int)sizeof(mon->water_interval));
+    offset = _eeprom_write_bytes(monitornum, offset, (char*)&mon->water_duration,   (unsigned int)sizeof(mon->water_duration));
 }
 
 void
