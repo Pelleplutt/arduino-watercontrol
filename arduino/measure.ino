@@ -10,7 +10,7 @@ _measurementhandler() {
 }
 
 unsigned int
-measure(unsigned char monitor) {
+measure(unsigned char monitor, bool void_value) {
     unsigned char a0, a1, enable, sense, interrupt;
     unsigned long measure_dur;
     unsigned long measuring_start;
@@ -46,7 +46,9 @@ measure(unsigned char monitor) {
 
     measuring_triggers = measuring_triggers * 1000 / measure_dur;
 
-    monitors[monitor].current_value = measuring_triggers;
+    if(!void_value) {
+        monitors[monitor].current_value = measuring_triggers;
+    }
     return measuring_triggers;
 }
 

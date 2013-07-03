@@ -192,7 +192,7 @@ void handleConfigIntervalInput(int button) {
                     if(config_edit_water_interval >= 6 * 3600) {
                         config_edit_water_interval += 6 * 3600;
                     } else {
-                        config_edit_water_interval += 15 * 60;
+                        config_edit_water_interval += 1 * 60;
                     }
                 } else {
                     config_edit_water_interval = 0;
@@ -208,7 +208,7 @@ void handleConfigIntervalInput(int button) {
                     if(config_edit_water_interval > 6 * 3600) {
                         config_edit_water_interval -= 6 * 3600;
                     } else {
-                        config_edit_water_interval -= 15 * 60;
+                        config_edit_water_interval -= 3 * 60;
                     }
                 }
                 drawConfigEditInterval();
@@ -378,6 +378,7 @@ void handleConfigManualInput(int button) {
             }
     }
 }
+
 /*******************************************************************************/
 void
 drawConfigMeasure(bool measuring) {
@@ -398,7 +399,7 @@ drawConfigMeasure(bool measuring) {
 void
 initConfigMeasure() {
     drawConfigMeasure(true);
-    measure(monitor_selection);
+    measure(monitor_selection, false);
     drawConfigMeasure(false);
 }
 
@@ -421,6 +422,147 @@ handleConfigMeasureInput(int button) {
     }
 }
 
+/*******************************************************************************/
+/* Current state of ongoing calibration */
+unsigned int config_calibrate_low = 0;
+unsigned int config_calibrate_high = 0;
+int config_calibrate_state = -1;
+
+void
+_drawConfigCalibrateHighLow(unsigned int high, unsigned int low) {
+    GLCD.print("Low: ");
+    if(low) {
+        GLCD.print(low);
+    } else {
+        GLCD.print("NOT SET");
+    }
+    GLCD.CursorTo(0, 1);
+
+    GLCD.print("High: ");
+    if(high) {
+        GLCD.print(high);
+    } else {
+        GLCD.print("NOT SET");
+    }
+}
+
+void
+drawConfigCalibrate() {
+    GLCD.SelectFont(Arial_bold_14, BLACK);
+    GLCD.EraseTextLine(1);
+    GLCD.EraseTextLine(0);
+
+    switch(config_calibrate_state) {
+        case 0:
+            GLCD.print("Hold in AIR.");
+            GLCD.CursorTo(0, 1);
+            GLCD.print("Then press 1");
+
+            break;
+
+        case 1:
+            GLCD.print("Sensing...");
+
+            break;
+
+        case 2:
+            _drawConfigCalibrateHighLow(config_calibrate_high,
+                    config_calibrate_low);
+            break;
+
+        case 3:
+            GLCD.print("Short sensor.");
+            GLCD.CursorTo(0, 1);
+            GLCD.print("Then press 1");
+
+            break;
+
+        case 4:
+            GLCD.print("Sensing...");
+
+            break;
+
+        case 5:
+            _drawConfigCalibrateHighLow(config_calibrate_high,
+                    config_calibrate_low);
+            break;
+
+        default:
+            _drawConfigCalibrateHighLow(monitors[monitor_selection].calibrated_max, 
+                    monitors[monitor_selection].calibrated_min);
+    }
+}
+
+void
+initConfigCalibrate() {
+    config_calibrate_state = 0;
+    config_calibrate_low = 0;
+    config_calibrate_high = 0;
+
+    drawConfigCalibrate();
+}
+
+void
+handleConfigCalibrateInput(int button) {
+    switch(button) {
+        case BUTTON_1:
+        case BUTTON_0:
+            switch(config_calibrate_state) {
+                case 0:
+                    config_calibrate_state++; //1
+                    drawConfigCalibrate();
+
+                    config_calibrate_low = measure(monitor_selection, true);
+
+                    config_calibrate_state++; //2
+                    drawConfigCalibrate();
+
+
+                    break;
+                case 2:
+                    config_calibrate_state++; //3
+                    drawConfigCalibrate();
+
+                    break;
+
+                case 3:
+                    config_calibrate_state++; //4
+                    drawConfigCalibrate();
+                    config_calibrate_high = measure(monitor_selection, true);
+
+                    config_calibrate_state++; //5
+                    drawConfigCalibrate();
+
+                    config_calibrate_state++; //6
+                    break;
+
+            }
+            
+            break;
+        case BUTTON_2:
+            switch(config_calibrate_state) {
+                case 6:
+                    monitors[monitor_selection].calibrated_min = config_calibrate_low;
+                    monitors[monitor_selection].calibrated_min = config_calibrate_high;
+
+                    break;
+
+                default:
+                    config_calibrate_state = 0;
+                    drawConfigCalibrate();
+
+                    break;
+            }
+            break;
+        case BUTTON_3: 
+            {
+                config_calibrate_state = -1;
+                active_config = -1;
+                draw();
+                break;
+            }
+    }
+}
 
 /*******************************************************************************/
 void drawConf() {
@@ -433,6 +575,9 @@ void drawConf() {
     switch(config_selection) {
         case 0:
             drawConfigName();
+            break;
+        case 1:
+            drawConfigCalibrate();
             break;
         case 2:
             drawConfigWater();
@@ -499,6 +644,9 @@ void handleConfInput(int button) {
                         case 0:
                             initConfigName();
                             break;
+                        case 1:
+                            initConfigCalibrate();
+                            break;
                         case 2:
                             initConfigWater();
                             break;
@@ -538,8 +686,10 @@ void handleConfInput(int button) {
                     break;
                 }
             case 1:
-                active_config = -1;
-                break;
+                {
+                    handleConfigCalibrateInput(button);
+                    break;
+                }
             case 2: 
                 {
                     handleConfigWaterInput(button);
