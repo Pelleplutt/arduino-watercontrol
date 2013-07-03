@@ -13,9 +13,9 @@ unsigned long last_button_read = 0;
 unsigned long now;
 unsigned long now_s;
 
-    /* The last millis() we redrawed the overview screen. Use this for auto
+    /* The last millis() we redrawed the log or overview screen. Use this for auto
      * refreshing the overview screen */
-unsigned long last_overview_redraw = 0;
+unsigned long last_auto_redraw = 0;
 
   /* Currently selected monitor from first screen */
 int monitor_selection = 0;
@@ -117,12 +117,13 @@ draw() {
         case SCREEN_OVERVIEW:
             {
                 drawOverview();
-                last_overview_redraw = millis();
+                last_auto_redraw = millis();
                 break;
             }
         case SCREEN_LOG:
             {
                 drawLog();
+                last_auto_redraw = millis();
                 break;
             }
         case SCREEN_CONFIG1:
@@ -237,9 +238,9 @@ loop() {
         }
     }
 
-    if(current_screen == SCREEN_OVERVIEW) {
+    if(current_screen == SCREEN_OVERVIEW || current_screen == SCREEN_LOG) {
             /* Redraw the screen every second */
-        if(now - last_overview_redraw >= 1000) {
+        if(now - last_auto_redraw >= 1000) {
             draw();
         }
     }
