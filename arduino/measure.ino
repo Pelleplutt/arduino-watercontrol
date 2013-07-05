@@ -63,7 +63,7 @@ getSensorCalibratedPercent(int value, unsigned long calibrated_min, unsigned lon
             value = calibrated_min;
         value -= calibrated_min;
         calibrated_max -= calibrated_min;
-        unsigned long percent = value * 100 / calibrated_max;
+        int percent = (unsigned long)value * 100 / calibrated_max;
 
         return percent;
     }
