@@ -10,13 +10,13 @@ drawOverview() {
 
         if(i == monitor_selection) {
             GLCD.CursorTo(0, 0);
-            GLCD.print(monitors[i].name);
 
             if(monitors[i].water_state == WATER_OPEN) {
-                GLCD.CursorTo(0, 1);
+                GLCD.SelectFont(Arial_bold_14, BLACK);
                 GLCD.print("OPEN");
 
-                GLCD.CursorTo(0, 2);
+                GLCD.CursorTo(0, 1);
+                GLCD.SelectFont(System5x7, BLACK);
                 GLCD.print("Close in ");
 
                     /* The port will be closed in main if we pass the trigger
@@ -24,19 +24,30 @@ drawOverview() {
                 GLCD.print(timeString((monitors[i].water_opened_at + monitors[i].water_open_for) - now_s));
 
             } else {
-                if(!monitors[i].enabled) {
-                    GLCD.CursorTo(0, 1);
+                if(!monitors[i].enabled || (monitors[i].trigger_value == 0 && monitors[i].water_interval == 0)) {
+                    GLCD.SelectFont(Arial_bold_14, BLACK);
                     GLCD.print("Disabled");
-                } else if(monitors[i].water_interval == 0) {
+                    GLCD.SelectFont(System5x7, BLACK);
+                } else if(monitors[i].trigger_value > 0) {
+                    GLCD.SelectFont(Arial_bold_14, BLACK);
+                    GLCD.print(monitors[i].trigger_value);
+                    GLCD.print("%");
+                    if(monitors[i].water_interval > 0) {
+                        GLCD.print(" / ");
+                        GLCD.print(timeString(monitors[i].water_interval));
+                    }
+                    GLCD.SelectFont(System5x7, BLACK);
+
                     drawSensorBar(monitors[i].current_value, monitors[i].calibrated_min, monitors[i].calibrated_max);
-                } else {
+                } else if(monitors[i].water_interval > 0) {
                     unsigned long seconds_since;
 
-                    GLCD.CursorTo(0, 1);
+                    GLCD.SelectFont(Arial_bold_14, BLACK);
                     GLCD.print("Every ");
                     GLCD.print(timeString(monitors[i].water_interval));
 
-                    GLCD.CursorTo(0, 2);
+                    GLCD.CursorTo(0, 1);
+                    GLCD.SelectFont(System5x7, BLACK);
                     GLCD.print("Next in ");
 
                     seconds_since = now_s - monitors[i].last_water_open;
