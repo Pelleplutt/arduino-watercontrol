@@ -1,6 +1,20 @@
 #include "greenhouse.h"
 
 /*******************************************************************************/
+void _printUntilNext(char monitor) {
+    unsigned long seconds_since = now_s - monitors[monitor].last_water_open;
+    GLCD.SelectFont(System5x7, BLACK);
+
+    char *tstr;
+    if(seconds_since >= monitors[monitor].water_interval) {
+        tstr = "ASAP";
+    } else {
+        tstr = timeString(monitors[monitor].water_interval - seconds_since);
+    }
+    GLCD.CursorTo(21 - strlen(tstr), 1);
+    GLCD.print(tstr);
+}
+
 void
 drawOverview() {
     GLCD.ClearScreen();
@@ -29,6 +43,7 @@ drawOverview() {
                     GLCD.print("Disabled");
                     GLCD.SelectFont(System5x7, BLACK);
                 } else if(monitors[i].trigger_value > 0) {
+
                     GLCD.SelectFont(Arial_bold_14, BLACK);
                     GLCD.print(monitors[i].trigger_value);
                     GLCD.print("%");
@@ -36,7 +51,7 @@ drawOverview() {
                         GLCD.print(" / ");
                         GLCD.print(timeString(monitors[i].water_interval));
                     }
-                    GLCD.SelectFont(System5x7, BLACK);
+                    _printUntilNext(i);
 
                     drawSensorBar(monitors[i].current_value, monitors[i].calibrated_min, monitors[i].calibrated_max);
                 } else if(monitors[i].water_interval > 0) {
@@ -46,17 +61,7 @@ drawOverview() {
                     GLCD.print("Every ");
                     GLCD.print(timeString(monitors[i].water_interval));
 
-                    GLCD.CursorTo(0, 1);
-                    GLCD.SelectFont(System5x7, BLACK);
-                    GLCD.print("Next in ");
-
-                    seconds_since = now_s - monitors[i].last_water_open;
-
-                    if(seconds_since >= monitors[i].water_interval) {
-                        GLCD.print("NO TIME");
-                    } else {
-                        GLCD.print(timeString(monitors[i].water_interval - seconds_since));
-                    }
+                    _printUntilNext(i);
                 }
             }
             GLCD.SetFontColor(WHITE);
