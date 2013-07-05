@@ -206,17 +206,16 @@ setup() {
 /*******************************************************************************/
 void
 draw() {
+    last_auto_redraw = millis();
     switch(current_screen) {
         case SCREEN_OVERVIEW:
             {
                 drawOverview();
-                last_auto_redraw = millis();
                 break;
             }
         case SCREEN_LOG:
             {
                 drawLog();
-                last_auto_redraw = millis();
                 break;
             }
         case SCREEN_CONFIG1:
@@ -314,66 +313,72 @@ loop() {
 
     char needs_redraw = 0;
 
-    for(i = 0; i < 8; i++) {
-        monitor *mon = &monitors[i];
-        if(mon->water_state == WATER_CLOSED) {
-            if(mon->enabled && open_ports < MAX_OPEN_WATER_PORTS) {
-                if(mon->water_interval > 0) {
-                    unsigned long seconds_since = now_s - mon->last_water_open;
+    if(now_s > 0) {
+        for(i = 0; i < 8; i++) {
+            monitor *mon = &monitors[i];
+            if(mon->water_state == WATER_CLOSED) {
+                if(mon->enabled && open_ports < MAX_OPEN_WATER_PORTS) {
+                    if(mon->water_interval > 0) {
+                        unsigned long seconds_since = now_s - mon->last_water_open;
 
-                    if(seconds_since > mon->water_interval) {
-                        showMonitorAction(i, "Open Interval");
-                        changeWaterPort(i, WATER_OPEN, mon->water_duration, OPEN_MODE_INTERVAL);
-                        delay(2000);
-                        open_ports++;
-                    }
-                        /* Only do a sensor reading if we have proper
-                         * calibrated values and a trigger value */
-                } else if(!measuring && mon->trigger_value && mon->calibrated_min && mon->calibrated_max) {
-                    unsigned long seconds_since = now_s - mon->last_sensor_read;
-
-                    if(seconds_since > SENSOR_MEASURE_INTERVAL || mon->last_sensor_read == 0) {
-                        char status_str[20];
-                        showMonitorAction(i, "Sensing...");
-                        measure(i, false);
-                        mon->last_sensor_read = now_s;
-
-                        int value = getSensorCalibratedPercent(mon->current_value, mon->calibrated_min, mon->calibrated_max);
-                        if(value > mon->trigger_value) {
-                            sprintf(status_str, "Sensed %d, open!", value);
-                            showMonitorAction(i, status_str);
-                            changeWaterPort(i, WATER_OPEN, mon->water_duration, OPEN_MODE_SENSOR);
-                            open_ports++;
+                        if(seconds_since > mon->water_interval) {
+                            showMonitorAction(i, "Open Interval");
+                            needs_redraw = 1;
+                            changeWaterPort(i, WATER_OPEN, mon->water_duration, OPEN_MODE_INTERVAL);
                             delay(2000);
-                        } else {
-                            sprintf(status_str, "Sensed %d", value);
-                            showMonitorAction(i, status_str);
+                            open_ports++;
+                        }
+                            /* Only do a sensor reading if we have proper
+                             * calibrated values and a trigger value */
+                    } else if(!measuring && mon->trigger_value && mon->calibrated_min && mon->calibrated_max) {
+                        unsigned long seconds_since = now_s - mon->last_sensor_read;
+
+                        if(seconds_since > SENSOR_MEASURE_INTERVAL || mon->last_sensor_read == 0) {
+                            char status_str[20];
+                            showMonitorAction(i, "Sensing...");
+                            needs_redraw = 1;
+                            measure(i, false);
+                            mon->last_sensor_read = now_s;
+
+                            int value = getSensorCalibratedPercent(mon->current_value, mon->calibrated_min, mon->calibrated_max);
+                            if(value > mon->trigger_value) {
+                                sprintf(status_str, "Sensed %d%%, open!", value);
+                                showMonitorAction(i, status_str);
+                                changeWaterPort(i, WATER_OPEN, mon->water_duration, OPEN_MODE_SENSOR);
+                                open_ports++;
+                                delay(2000);
+                            } else {
+                                sprintf(status_str, "Sensed %d%%", value);
+                                showMonitorAction(i, status_str);
+                                delay(1000);
+                            }
                         }
                     }
                 }
-            }
-        }else {
-            open_ports++;
+            }else {
+                open_ports++;
 
-                /* Did the timer wrap ? attempt to recover */
-            if(mon->water_opened_at > now_s) {
-                    /* First, adjust how much "millis" we had left when opened */
-                unsigned long time_before_wrap = MILLIS_MAX / 1000 - mon->water_opened_at;
-                    /* Then reset open until now and reduce open time with time until wrap */
-                mon->water_opened_at = 0;
-                    /* Failsafe this ... */
-                if(mon->water_open_for < time_before_wrap) {
-                    mon->water_open_for = 0;
-                } else {
-                    mon->water_open_for = mon->water_open_for - time_before_wrap;
+                    /* Did the timer wrap ? attempt to recover */
+                if(mon->water_opened_at > now_s) {
+                        /* First, adjust how much "millis" we had left when opened */
+                    unsigned long time_before_wrap = MILLIS_MAX / 1000 - mon->water_opened_at;
+                        /* Then reset open until now and reduce open time with time until wrap */
+                    mon->water_opened_at = 0;
+                        /* Failsafe this ... */
+                    if(mon->water_open_for < time_before_wrap) {
+                        mon->water_open_for = 0;
+                    } else {
+                        mon->water_open_for = mon->water_open_for - time_before_wrap;
+                    }
                 }
-            }
 
-            if(now_s >= (mon->water_opened_at + mon->water_open_for)) {
-                showMonitorAction(i, "Close");
-                changeWaterPort(i, WATER_CLOSED, 0, 0);
-                delay(2000);
-                open_ports--;
+                if(now_s >= (mon->water_opened_at + mon->water_open_for)) {
+                    showMonitorAction(i, "Close");
+                    needs_redraw = 1;
+                    changeWaterPort(i, WATER_CLOSED, 0, 0);
+                    delay(2000);
+                    open_ports--;
+                }
             }
         }
     }
