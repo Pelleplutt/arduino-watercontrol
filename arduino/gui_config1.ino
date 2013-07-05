@@ -13,8 +13,8 @@ char config_monitor_changed = 0;
 
 void
 drawConfigEditName() {
+    GLCD.ClearScreen();
     GLCD.SelectFont(System5x7, BLACK);
-    GLCD.EraseTextLine(0);
     GLCD.print(config_edit_name);
     GLCD.CursorTo(strlen(config_edit_name), 0);
     GLCD.SetFontColor(WHITE);
@@ -106,25 +106,26 @@ handleConfigNameInput(int button) {
 unsigned int config_edit_water_duration;
 
 void
-drawConfigEditWater() {
-    GLCD.EraseTextLine(0);
+drawConfigEditWaterDuration() {
+    GLCD.ClearScreen();
+    GLCD.SelectFont(Arial_bold_14);
     GLCD.print(timeString((unsigned long)config_edit_water_duration));
 }
 
 void
-initConfigWater() {
+initConfigWaterDuration() {
     config_edit_water_duration = monitors[monitor_selection].water_duration;
-    drawConfigEditWater();
+    drawConfigEditWaterDuration();
 }
 
 void
-drawConfigWater() {
-    GLCD.EraseTextLine(0);
+drawConfigWaterDuration() {
+    GLCD.SelectFont(Arial_bold_14);
     GLCD.print(timeString((unsigned long)monitors[monitor_selection].water_duration));
 }
 
 void
-handleConfigWaterInput(int button) {
+handleConfigWaterDurationInput(int button) {
     switch(button) {
         case BUTTON_0:
             {
@@ -137,7 +138,7 @@ handleConfigWaterInput(int button) {
                 } else {
                     config_edit_water_duration = 0;
                 }
-                drawConfigEditWater();
+                drawConfigEditWaterDuration();
                 break;
             }
         case BUTTON_1:
@@ -151,7 +152,7 @@ handleConfigWaterInput(int button) {
                 } else {
                     config_edit_water_duration = MAX_WATER_DURATION;
                 }
-                drawConfigEditWater();
+                drawConfigEditWaterDuration();
                 break;
             }
         case BUTTON_2:
@@ -190,7 +191,7 @@ initConfigInterval() {
 
 void
 drawConfigInterval() {
-    GLCD.EraseTextLine(0);
+    GLCD.SelectFont(Arial_bold_14);
     if(monitors[monitor_selection].water_interval == 0) {
         GLCD.print("OFF");
     } else {
@@ -253,10 +254,9 @@ int  config_edit_trigger;
 
 void
 _drawConfigEditTrigger(int value) {
-    GLCD.EraseTextLine(0);
+    GLCD.SelectFont(Arial_bold_14, BLACK);
     if(value == -1) {
         GLCD.print("OFF");
-        GLCD.EraseTextLine(1);
     } else {
         drawSensorBar(value, 0, 100);
     }
@@ -264,6 +264,7 @@ _drawConfigEditTrigger(int value) {
 
 void
 drawConfigEditTrigger() {
+    GLCD.ClearScreen();
     _drawConfigEditTrigger(config_edit_trigger);
 }
 
@@ -296,7 +297,7 @@ handleConfigTriggerInput(int button) {
                 if(config_edit_trigger == 1) {
                     config_edit_trigger = 100;
                 } else {
-                    config_edit_trigger = (++config_edit_trigger) % 100;
+                    config_edit_trigger--;
                 }
                 drawConfigEditTrigger();
                 break;
@@ -322,7 +323,6 @@ char  config_edit_enabled;
 void
 _drawConfigEditEnabled(char value) {
     GLCD.SelectFont(Arial_bold_14, BLACK);
-    GLCD.EraseTextLine(0);
     if(value == 0) {
         GLCD.print("Disabled");
     } else {
@@ -332,6 +332,7 @@ _drawConfigEditEnabled(char value) {
 
 void
 drawConfigEditEnabled() {
+    GLCD.ClearScreen();
     _drawConfigEditEnabled(config_edit_enabled);
 }
 
@@ -373,25 +374,31 @@ handleConfigEnabledInput(int button) {
 
 /*******************************************************************************/
 void
-_drawConfigManual(unsigned char value) {
+_drawConfigManual() {
     GLCD.SelectFont(Arial_bold_14, BLACK);
-    GLCD.EraseTextLine(0);
-    if(value) {
-        GLCD.print("Opened for ");
-        GLCD.print(timeString((unsigned long)MANUAL_WATER_OPEN_TIME));
+    if(monitors[monitor_selection].water_state == WATER_OPEN) {
+        GLCD.print("Open, close in ");
+        GLCD.CursorTo(0, 1);
+        GLCD.print(timeString((monitors[monitor_selection].water_opened_at + monitors[monitor_selection].water_open_for) - now_s));
     } else {
         GLCD.print("Closed");
     }
 }
 
 void
+drawConfigEditManual() {
+    GLCD.ClearScreen();
+    _drawConfigManual();
+}
+
+void
 initConfigManual() {
-    drawConfigManual();
+    drawConfigEditManual();
 }
 
 void
 drawConfigManual() {
-    _drawConfigManual(monitors[monitor_selection].water_state);
+    _drawConfigManual();
 }
 
 void
@@ -401,9 +408,8 @@ handleConfigManualInput(int button) {
         case BUTTON_1:
 
             {
-                monitors[monitor_selection].water_state ^= 1;
-                _drawConfigManual(monitors[monitor_selection].water_state);
-                changeWaterPort(monitor_selection, monitors[monitor_selection].water_state, MANUAL_WATER_OPEN_TIME, OPEN_MODE_MANUAL);
+                changeWaterPort(monitor_selection, monitors[monitor_selection].water_state ^ 1, MANUAL_WATER_OPEN_TIME, OPEN_MODE_MANUAL);
+                drawConfigEditManual();
                 break;
             }
         case BUTTON_3:
@@ -416,8 +422,9 @@ handleConfigManualInput(int button) {
 }
 
 /*******************************************************************************/
+
 void
-drawConfigMeasure(bool measuring) {
+drawConfigEditMeasure(bool measuring) {
     GLCD.SelectFont(Arial_bold_14, BLACK);
     GLCD.EraseTextLine(0);
     if(measuring) {
@@ -433,11 +440,15 @@ drawConfigMeasure(bool measuring) {
 }
 
 void
+drawConfigMeasure() {
+}
+
+void
 initConfigMeasure() {
     if(!measuring) {
-        drawConfigMeasure(true);
+        drawConfigEditMeasure(true);
         measure(monitor_selection, false);
-        drawConfigMeasure(false);
+        drawConfigEditMeasure(false);
     } else {
         active_config = -1;
         draw();
@@ -490,8 +501,14 @@ _drawConfigCalibrateHighLow(unsigned int high, unsigned int low) {
 void
 drawConfigCalibrate() {
     GLCD.SelectFont(Arial_bold_14, BLACK);
-    GLCD.EraseTextLine(1);
-    GLCD.EraseTextLine(0);
+    _drawConfigCalibrateHighLow(monitors[monitor_selection].calibrated_max,
+            monitors[monitor_selection].calibrated_min);
+}
+
+void
+drawConfigEditCalibrate() {
+    GLCD.ClearScreen();
+    GLCD.SelectFont(Arial_bold_14, BLACK);
 
     switch(config_calibrate_state) {
         case 0:
@@ -540,7 +557,7 @@ initConfigCalibrate() {
     config_calibrate_low = 0;
     config_calibrate_high = 0;
 
-    drawConfigCalibrate();
+    drawConfigEditCalibrate();
 }
 
 void
@@ -555,28 +572,28 @@ handleConfigCalibrateInput(int button) {
             switch(config_calibrate_state) {
                 case 0:
                     config_calibrate_state++; //1
-                    drawConfigCalibrate();
+                    drawConfigEditCalibrate();
 
                     config_calibrate_low = measure(monitor_selection, true);
 
                     config_calibrate_state++; //2
-                    drawConfigCalibrate();
+                    drawConfigEditCalibrate();
 
 
                     break;
                 case 2:
                     config_calibrate_state++; //3
-                    drawConfigCalibrate();
+                    drawConfigEditCalibrate();
 
                     break;
 
                 case 3:
                     config_calibrate_state++; //4
-                    drawConfigCalibrate();
+                    drawConfigEditCalibrate();
                     config_calibrate_high = measure(monitor_selection, true);
 
                     config_calibrate_state++; //5
-                    drawConfigCalibrate();
+                    drawConfigEditCalibrate();
 
                     config_calibrate_state++; //6
                     break;
@@ -599,7 +616,7 @@ handleConfigCalibrateInput(int button) {
 
                 default:
                     config_calibrate_state = 0;
-                    drawConfigCalibrate();
+                    drawConfigEditCalibrate();
 
                     break;
             }
@@ -628,13 +645,19 @@ drawConfig1() {
             drawConfigCalibrate();
             break;
         case 2:
-            drawConfigWater();
+            drawConfigWaterDuration();
             break;
         case 3:
             drawConfigTrigger();
             break;
+        case 4:
+            drawConfigManual();
+            break;
         case 5:
             drawConfigEnabled();
+            break;
+        case 6:
+            drawConfigMeasure();
             break;
         case 7:
             drawConfigInterval();
@@ -697,7 +720,7 @@ handleConfig1Input(int button) {
                             initConfigCalibrate();
                             break;
                         case 2:
-                            initConfigWater();
+                            initConfigWaterDuration();
                             break;
                         case 3:
                             initConfigTrigger();
@@ -748,7 +771,7 @@ handleConfig1Input(int button) {
                 }
             case 2:
                 {
-                    handleConfigWaterInput(button);
+                    handleConfigWaterDurationInput(button);
                     break;
                 }
             case 3:
