@@ -333,15 +333,21 @@ loop() {
                     unsigned long seconds_since = now_s - mon->last_sensor_read;
 
                     if(seconds_since > SENSOR_MEASURE_INTERVAL || mon->last_sensor_read == 0) {
+                        char status_str[20];
                         showMonitorAction(i, "Sensing...");
                         measure(i, false);
                         mon->last_sensor_read = now_s;
 
-                        if(getSensorCalibratedPercent(mon->current_value, mon->calibrated_min, mon->calibrated_max) > mon->trigger_value) {
-                            showMonitorAction(i, "Open sensed");
+                        int value = getSensorCalibratedPercent(mon->current_value, mon->calibrated_min, mon->calibrated_max);
+                        if(value > mon->trigger_value) {
+                            sprintf(status_str, "Sensed %d, open!", value);
+                            showMonitorAction(i, status_str);
                             changeWaterPort(i, WATER_OPEN, mon->water_duration, OPEN_MODE_SENSOR);
                             open_ports++;
                             delay(2000);
+                        } else {
+                            sprintf(status_str, "Sensed %d", value);
+                            showMonitorAction(i, status_str);
                         }
                     }
                 }
