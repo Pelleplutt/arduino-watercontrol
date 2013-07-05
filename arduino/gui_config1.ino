@@ -175,7 +175,8 @@ unsigned long  config_edit_water_interval;
 
 void
 drawConfigEditInterval() {
-    GLCD.EraseTextLine(0);
+    GLCD.ClearScreen();
+    GLCD.SelectFont(Arial_bold_14);
     if(config_edit_water_interval == 0) {
         GLCD.print("OFF");
     } else {
