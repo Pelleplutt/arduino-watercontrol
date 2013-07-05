@@ -637,31 +637,60 @@ drawConfig1() {
     GLCD.SetFontColor(BLACK);
     GLCD.ClearScreen();
 
-    switch(config_selection) {
-        case 0:
-            drawConfigName();
-            break;
-        case 1:
-            drawConfigCalibrate();
-            break;
-        case 2:
-            drawConfigWaterDuration();
-            break;
-        case 3:
-            drawConfigTrigger();
-            break;
-        case 4:
-            drawConfigManual();
-            break;
-        case 5:
-            drawConfigEnabled();
-            break;
-        case 6:
-            drawConfigMeasure();
-            break;
-        case 7:
-            drawConfigInterval();
-            break;
+    if(active_config == -1) {
+        switch(config_selection) {
+            case 0:
+                drawConfigName();
+                break;
+            case 1:
+                drawConfigCalibrate();
+                break;
+            case 2:
+                drawConfigWaterDuration();
+                break;
+            case 3:
+                drawConfigTrigger();
+                break;
+            case 4:
+                drawConfigManual();
+                break;
+            case 5:
+                drawConfigEnabled();
+                break;
+            case 6:
+                drawConfigMeasure();
+                break;
+            case 7:
+                drawConfigInterval();
+                break;
+        }
+    } else {
+        switch(active_config) {
+            case 0:
+                drawConfigEditName();
+                break;
+            case 1:
+                drawConfigEditCalibrate();
+                break;
+            case 2:
+                drawConfigEditWaterDuration();
+                break;
+            case 3:
+                drawConfigEditTrigger();
+                break;
+            case 4:
+                drawConfigEditManual();
+                break;
+            case 5:
+                drawConfigEditEnabled();
+                break;
+            case 6:
+                drawConfigEditMeasure(false);
+                break;
+            case 7:
+                drawConfigEditInterval();
+                break;
+        }
     }
     GLCD.SelectFont(System5x7, BLACK);
 
