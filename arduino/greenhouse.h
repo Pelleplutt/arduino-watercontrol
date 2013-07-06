@@ -29,8 +29,9 @@
 #define DISPLAY_X_MIDDLE  11
 
 #define SCREEN_OVERVIEW  0
-#define SCREEN_LOG 1
-#define SCREEN_CONFIG1 2
+#define SCREEN_LOG_OPEN 1
+#define SCREEN_LOG_SENSE 2
+#define SCREEN_CONFIG1 3
 
 #define NAME_MAX_LEN 10
 #define MAX_WATER_DURATION 1800
@@ -56,13 +57,20 @@
     /* FIXME DO WE HAVE A MAX define somewhere ...? */
 #define MILLIS_MAX 4294967295
 
-typedef struct water_log {
+typedef struct water_open_log {
         /* millis() / 1000 time of open */
     unsigned long time;
         /* OPEN_MODE_* */
     char open_mode;
         /* Duration in seconds of openness */
     unsigned int duration;
+};
+
+typedef struct water_sense_log {
+        /* millis() / 1000 time of open */
+    unsigned long time;
+        /* Reading in number of triggers */
+    int value;
 };
 
     /* Pad each entry in EEPROM by this much, this will give us some headroom
@@ -96,9 +104,13 @@ typedef struct monitor {
     /* The last millis() / 1000 we opened the port */
     unsigned long   last_water_open;
 
-    unsigned char current_log;
+    unsigned char current_open_log;
     /* Time of last waterings */
-    water_log   log[MONITOR_LOG_COUNT];
+    water_open_log   open_log[MONITOR_LOG_COUNT];
+
+    unsigned char current_sense_log;
+    /* Values of last sensor readings */
+    water_sense_log     sense_log[MONITOR_LOG_COUNT];
 
     /* millis()/1000 of last time we read the sensor */
     unsigned long last_sensor_read;
@@ -157,9 +169,13 @@ handleOverviewInput(int button);
 
     /* GUI_LOG */
 void 
-drawLog();
+drawOpenLog();
 void 
-handleLogInput(int button);
+handleOpenLogInput(int button);
+void 
+drawSenseLog();
+void 
+handleSenseLogInput(int button);
 
     /* GUI_CONFIG1 */
 void 
@@ -193,7 +209,9 @@ getSensorCalibratedPercent(int value, unsigned long calibrated_min, unsigned lon
 
     /* LOG */
 void
-appendToLog(unsigned char monitor, char mode, unsigned long time);
+appendToOpenLog(unsigned char monitor, char mode, unsigned long time);
+void
+appendToSenseLog(unsigned char monitor, int value, unsigned long time);
 
 
 #endif

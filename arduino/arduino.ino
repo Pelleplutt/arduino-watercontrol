@@ -213,9 +213,14 @@ draw() {
                 drawOverview();
                 break;
             }
-        case SCREEN_LOG:
+        case SCREEN_LOG_OPEN:
             {
-                drawLog();
+                drawOpenLog();
+                break;
+            }
+        case SCREEN_LOG_SENSE:
+            {
+                drawSenseLog();
                 break;
             }
         case SCREEN_CONFIG1:
@@ -255,9 +260,14 @@ handleInput(int button) {
                 handleOverviewInput(button);
                 break;
             }
-        case SCREEN_LOG:
+        case SCREEN_LOG_OPEN:
             {
-                handleLogInput(button);
+                handleOpenLogInput(button);
+                break;
+            }
+        case SCREEN_LOG_SENSE:
+            {
+                handleSenseLogInput(button);
                 break;
             }
         case SCREEN_CONFIG1:
@@ -390,7 +400,7 @@ loop() {
         }
     }
 
-    if(current_screen == SCREEN_OVERVIEW || current_screen == SCREEN_LOG) {
+    if(current_screen == SCREEN_OVERVIEW || current_screen == SCREEN_LOG_OPEN || current_screen == SCREEN_LOG_SENSE) {
             /* Redraw the screen every second */
         if(now - last_auto_redraw >= 1000) {
             needs_redraw = 1;

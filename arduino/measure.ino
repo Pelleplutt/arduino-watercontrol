@@ -51,6 +51,7 @@ measure(unsigned char monitor, bool void_value) {
 
     if(!void_value) {
         monitors[monitor].current_value = measuring_triggers;
+        appendToSenseLog(monitor, measuring_triggers, now_s);
     }
     measuring = 0;
     return measuring_triggers;

@@ -108,7 +108,7 @@ handleOverviewInput(int button) {
             }
         case BUTTON_3:
             {
-                switchScreen(SCREEN_LOG);
+                switchScreen(SCREEN_LOG_OPEN);
             }
     }
 }

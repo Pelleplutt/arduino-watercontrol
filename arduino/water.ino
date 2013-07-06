@@ -11,7 +11,7 @@ changeWaterPort(unsigned char monitor, unsigned char state, unsigned long open_t
         monitors[monitor].water_open_for = open_time;
         monitors[monitor].last_water_open = monitors[monitor].water_opened_at;
 
-        appendToLog(monitor, mode, monitors[monitor].water_opened_at);
+        appendToOpenLog(monitor, mode, monitors[monitor].water_opened_at);
     } else if(state == WATER_CLOSED) {
         digitalWrite(monitors[monitor].water_port, LOW);
         monitors[monitor].water_state = state;
