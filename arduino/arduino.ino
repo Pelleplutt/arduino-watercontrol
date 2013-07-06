@@ -358,7 +358,7 @@ loop() {
                             mon->last_sensor_read = now_s;
 
                             int value = getSensorCalibratedPercent(mon->current_value, mon->calibrated_min, mon->calibrated_max);
-                            if(value > mon->trigger_value) {
+                            if(value < mon->trigger_value) {
                                 sprintf(status_str, "Sensed %d%%, open!", value);
                                 showMonitorAction(i, status_str);
                                 changeWaterPort(i, WATER_OPEN, mon->water_duration, OPEN_MODE_SENSOR);
