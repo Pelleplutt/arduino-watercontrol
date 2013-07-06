@@ -256,7 +256,7 @@ int  config_edit_trigger;
 void
 _drawConfigEditTrigger(int value) {
     GLCD.SelectFont(Arial_bold_14, BLACK);
-    if(value == -1) {
+    if(value == 0) {
         GLCD.print("OFF");
     } else {
         drawSensorBar(value, 0, 100);
@@ -285,18 +285,14 @@ handleConfigTriggerInput(int button) {
     switch(button) {
         case BUTTON_0:
             {
-                if(config_edit_trigger == 99) {
-                    config_edit_trigger = -1;
-                } else {
-                    config_edit_trigger = (++config_edit_trigger) % 100;
-                }
+                config_edit_trigger = (++config_edit_trigger) % 100;
                 drawConfigEditTrigger();
                 break;
             }
         case BUTTON_1:
             {
-                if(config_edit_trigger == 1) {
-                    config_edit_trigger = 100;
+                if(config_edit_trigger == 0) {
+                    config_edit_trigger = 99;
                 } else {
                     config_edit_trigger--;
                 }
