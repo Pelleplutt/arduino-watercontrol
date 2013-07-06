@@ -51,7 +51,9 @@ drawOverview() {
                         GLCD.print(" / ");
                         GLCD.print(timeString(monitors[i].water_interval));
                     }
-                    _printUntilNext(i);
+                    if(monitors[i].trigger_value) {
+                        _printUntilNext(i);
+                    }
 
                     drawSensorBar(monitors[i].current_value, monitors[i].calibrated_min, monitors[i].calibrated_max);
                 } else if(monitors[i].water_interval > 0) {
