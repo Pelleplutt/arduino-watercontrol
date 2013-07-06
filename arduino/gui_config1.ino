@@ -427,7 +427,7 @@ handleConfigManualInput(int button) {
 void
 drawConfigEditMeasure(bool measuring) {
     GLCD.SelectFont(Arial_bold_14, BLACK);
-    GLCD.EraseTextLine(0);
+    GLCD.ClearScreen();
     if(measuring) {
         GLCD.print("Sensing...");
     } else {
@@ -513,7 +513,7 @@ drawConfigEditCalibrate() {
 
     switch(config_calibrate_state) {
         case 0:
-            GLCD.print("Hold in AIR.");
+            GLCD.print("Hold in AIR");
             GLCD.CursorTo(0, 1);
             GLCD.print("Then press 1");
 
@@ -530,7 +530,7 @@ drawConfigEditCalibrate() {
             break;
 
         case 3:
-            GLCD.print("Short sensor.");
+            GLCD.print("Put in WATER");
             GLCD.CursorTo(0, 1);
             GLCD.print("Then press 1");
 
