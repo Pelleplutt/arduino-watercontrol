@@ -80,14 +80,31 @@ drawSenseLog() {
     }
 }
 
+void
+clearSenseLog() {
+    monitors[monitor_selection].current_sense_log = 0;
+    memset(monitors[monitor_selection].sense_log, sizeof(monitors[monitor_selection].sense_log), 0);
+}
+
+void
+clearOpenLog() {
+    monitors[monitor_selection].current_open_log = 0;
+    memset(monitors[monitor_selection].open_log, sizeof(monitors[monitor_selection].open_log), 0);
+}
+
 /*******************************************************************************/
 void
 handleOpenLogInput(int button) {
     switch(button) {
         case BUTTON_0:
         case BUTTON_1:
+            {
+                draw();
+                break;
+            }
         case BUTTON_2:
             {
+                clearOpenLog();
                 draw();
                 break;
             }
@@ -108,8 +125,13 @@ handleSenseLogInput(int button) {
     switch(button) {
         case BUTTON_0:
         case BUTTON_1:
+            {
+                draw();
+                break;
+            }
         case BUTTON_2:
             {
+                clearSenseLog();
                 draw();
                 break;
             }
