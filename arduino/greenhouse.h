@@ -173,9 +173,12 @@ drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibrated_
     /* STRINGS */
 char 
 *timeString(int seconds);
-
+char 
+*timeString(int seconds, unsigned char maxlen);
 char *
 relativeTimeString(unsigned long when);
+char *
+relativeTimeString(unsigned long when, unsigned char maxlen);
 
     /* WATER */
 void 
