@@ -206,10 +206,10 @@ handleConfigIntervalInput(int button) {
         case BUTTON_0:
             {
                 if(config_edit_water_interval < MAX_WATER_INTERVAL) {
-                    if(config_edit_water_interval >= 6 * 3600) {
-                        config_edit_water_interval += 6 * 3600;
+                    if(config_edit_water_interval >= 4 * 3600) {
+                        config_edit_water_interval += 20 * 60;
                     } else {
-                        config_edit_water_interval += 1 * 60;
+                        config_edit_water_interval += 10 * 60;
                     }
                 } else {
                     config_edit_water_interval = 0;
@@ -219,17 +219,17 @@ handleConfigIntervalInput(int button) {
             }
         case BUTTON_1:
             {
-                if(config_edit_water_interval < 3 * 60) {
+                if(config_edit_water_interval < 10 * 60) {
                     if(config_edit_water_interval > 0) {
                         config_edit_water_interval = 0;
                     } else {
                         config_edit_water_interval = MAX_WATER_INTERVAL;
                     }
                 }else {
-                    if(config_edit_water_interval > 6 * 3600) {
-                        config_edit_water_interval -= 6 * 3600;
+                    if(config_edit_water_interval > 4 * 3600) {
+                        config_edit_water_interval -= 20 * 60;
                     } else {
-                        config_edit_water_interval -= 3 * 60;
+                        config_edit_water_interval -= 10 * 60;
                     }
                 }
                 drawConfigEditInterval();
