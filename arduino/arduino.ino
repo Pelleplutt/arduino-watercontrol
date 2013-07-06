@@ -352,22 +352,44 @@ loop() {
 
                         if(seconds_since > SENSOR_MEASURE_INTERVAL || mon->last_sensor_read == 0) {
                             char status_str[20];
+
+                                /* Save the current value, if the new reading
+                                 * differs to much we will ignore it and write
+                                 * back the old value as the current. This as a
+                                 * somewhat defence against flakey sensor
+                                 * readings. */
+                            int value_before = mon->current_value;
+
                             showMonitorAction(i, "Sensing...");
                             needs_redraw = 1;
                             measure(i, false);
                             mon->last_sensor_read = now_s;
 
                             int value = getSensorCalibratedPercent(mon->current_value, mon->calibrated_min, mon->calibrated_max);
-                            if(value < mon->trigger_value) {
-                                sprintf(status_str, "Sensed %d%%, open!", value);
-                                showMonitorAction(i, status_str);
-                                changeWaterPort(i, WATER_OPEN, mon->water_duration, OPEN_MODE_SENSOR);
-                                open_ports++;
-                                delay(2000);
-                            } else {
-                                sprintf(status_str, "Sensed %d%%", value);
+
+                                /* If the new reading is significantly lower
+                                 * then the previous one, then ignore the
+                                 * reading, it might be due to the sensors
+                                 * being silly. Recover using a manual sensing. */
+                            if(value_before != SENSE_VALUE_INVALID &&
+                                    (value_before - mon->current_value) > (value_before / 4)) {
+
+                                mon->current_value = value_before;
+                                sprintf(status_str, "Funky read? %d%%!", value);
                                 showMonitorAction(i, status_str);
                                 delay(1000);
+                            } else {
+                                if(value < mon->trigger_value) {
+                                    sprintf(status_str, "Sensed %d%%, open!", value);
+                                    showMonitorAction(i, status_str);
+                                    changeWaterPort(i, WATER_OPEN, mon->water_duration, OPEN_MODE_SENSOR);
+                                    open_ports++;
+                                    delay(2000);
+                                } else {
+                                    sprintf(status_str, "Sensed %d%%", value);
+                                    showMonitorAction(i, status_str);
+                                    delay(1000);
+                                }
                             }
                         }
                     }
