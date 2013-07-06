@@ -8,7 +8,7 @@ drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibrated_
         int percent = getSensorCalibratedPercent(value, calibrated_min, calibrated_max);
         int pixels = (GLCD.Width - 1) * percent / 100;
 
-        if(percent == 100) {
+        if(percent >= 100) {
             GLCD.CursorTo(17, 0);
         } else if(percent >= 10) {
             GLCD.CursorTo(18, 0);
