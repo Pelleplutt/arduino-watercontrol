@@ -127,6 +127,7 @@ typedef struct monitor {
     unsigned long water_open_for;
 };
 
+#define SYSTEM_LOG_EVENT_TYPE_INVALID 0
 #define SYSTEM_LOG_EVENT_TYPE_BOOT 'b'
 #define SYSTEM_LOG_EVENT_TYPE_SENSE 's'
 #define SYSTEM_LOG_EVENT_TYPE_SENSE_FUNKY 'f'

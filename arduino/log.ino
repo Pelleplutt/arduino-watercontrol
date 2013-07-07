@@ -1,7 +1,7 @@
 #include "greenhouse.h"
 
 system_log_entry system_log[SYSTEM_LOG_COUNT];
-int last_system_log;
+int last_system_log = 0;
 
 void
 appendToOpenLog(unsigned char monitor, char mode, unsigned long time) {

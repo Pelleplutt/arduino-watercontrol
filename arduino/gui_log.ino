@@ -89,19 +89,17 @@ drawSystemLog() {
 
     GLCD.ClearScreen();
     GLCD.SelectFont(System5x7, BLACK);
-    char entry_number  = top_system_log_entry;
+        /* This will never wrap as we check this when setting the top entry
+         * below */
+    char entry_number  = top_system_log_entry + 8;
 
-
-        /* We will have no inbetween invalid entries, either they are set or
-         * they are empty so simply draw the ones we can, skip the rest */
+        /* Current row we are drawing */
+    char row = 0;
     for(char i = 0; i < 8; i++) {
         entry_number--;
-        if(entry_number == -1) {
-            entry_number = SYSTEM_LOG_COUNT - 1;
-        }
-
         log = &system_log[entry_number];
-        if(log->time) {
+
+        if(log->event_type != SYSTEM_LOG_EVENT_TYPE_INVALID) {
             char reading[25];
             char const *action_str;
 
@@ -154,13 +152,13 @@ drawSystemLog() {
                             monitors[log->monitor].name);
                 }
             }
-            GLCD.CursorTo(0, i);
+            GLCD.CursorTo(0, row++);
             GLCD.print(reading);
         }
     }
 
         /* No valid enties? */
-    if(last_system_log == 0 && system_log[0].time == 0) {
+    if(last_system_log == 0 && system_log[0].event_type == SYSTEM_LOG_EVENT_TYPE_INVALID) {
 
         GLCD.print("No log");
     }
@@ -232,9 +230,8 @@ void
 handleSystemLogInput(int button) {
     switch(button) {
         case BUTTON_0:
-        {
             top_system_log_entry = (top_system_log_entry + 8) % SYSTEM_LOG_COUNT;
-                /* SYSTEM_LOG_COUNT %8 == 0 */
+            /* SYSTEM_LOG_COUNT %8 == 0 */
             if(last_system_log < top_system_log_entry) {
                 /* The current top value is allowed to be bigger only if we
                  * have wrapped the buffer */
@@ -249,33 +246,27 @@ handleSystemLogInput(int button) {
                 }
             }
             draw();
-        }
         case BUTTON_1:
-            {
-                if(top_system_log_entry >= 8) {
-                        /* If we have set a larger value then this, then all
-                         * values below are good */
-                    top_system_log_entry -= 8;
-                } else {
-                    /* Easy check here, if the last value in the circular log
-                     * is good, then we can wrap safely. Otherwise stay put */
-                    if(system_log[SYSTEM_LOG_COUNT - 1].time > 0) {
-                        top_system_log_entry = SYSTEM_LOG_COUNT - 8;
-                    }
+            if(top_system_log_entry >= 8) {
+                /* If we have set a larger value then this, then all
+                 * values below are good */
+                top_system_log_entry -= 8;
+            } else {
+                /* Easy check here, if the last value in the circular log
+                 * is good, then we can wrap safely. Otherwise stay put */
+                if(system_log[SYSTEM_LOG_COUNT - 1].time > 0) {
+                    top_system_log_entry = SYSTEM_LOG_COUNT - 8;
                 }
-                draw();
-                break;
             }
+            draw();
+            break;
         case BUTTON_2:
-            {
-                system_log_page ^= 1;
-                draw();
-                break;
-            }
+            system_log_page ^= 1;
+            draw();
+            break;
         case BUTTON_3:
-            {
-                switchScreen(SCREEN_CONFIG1);
-            }
+            switchScreen(SCREEN_OVERVIEW);
+            break;
     }
 }
 
