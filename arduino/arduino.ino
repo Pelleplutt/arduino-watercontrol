@@ -196,6 +196,7 @@ setup() {
     pinMode(PORT_SENSE1_E, OUTPUT);
 
     loadMonitors();
+    appendToSystemLog(-1, SYSTEM_LOG_EVENT_TYPE_BOOT, SENSE_VALUE_INVALID, 0);
 
     GLCD.Init();
     GLCD.ClearScreen();
@@ -335,6 +336,7 @@ loop() {
                             showMonitorAction(i, "Open Interval");
                             needs_redraw = 1;
                             changeWaterPort(i, WATER_OPEN, mon->water_duration, OPEN_MODE_INTERVAL);
+                            appendToSystemLog(i, SYSTEM_LOG_EVENT_TYPE_INTERVAL_OPEN, mon->current_value, now_s);
                             delay(2000);
                             open_ports++;
                         }
@@ -377,13 +379,16 @@ loop() {
                                 mon->current_value = value_before;
                                 sprintf(status_str, "Funky read? %d%%!", value);
                                 showMonitorAction(i, status_str);
+                                appendToSystemLog(i, SYSTEM_LOG_EVENT_TYPE_SENSE_FUNKY, value, now_s);
                                 delay(1000);
                             } else {
+                                appendToSystemLog(i, SYSTEM_LOG_EVENT_TYPE_SENSE, value, now_s);
                                 if(value < mon->trigger_value) {
                                     sprintf(status_str, "Sensed %d%%, open!", value);
                                     showMonitorAction(i, status_str);
                                     changeWaterPort(i, WATER_OPEN, mon->water_duration, OPEN_MODE_SENSOR);
                                     open_ports++;
+                                    appendToSystemLog(i, SYSTEM_LOG_EVENT_TYPE_SENSE_OPEN, value, now_s);
                                     delay(2000);
                                 } else {
                                     sprintf(status_str, "Sensed %d%%", value);
@@ -415,8 +420,9 @@ loop() {
                     showMonitorAction(i, "Close");
                     needs_redraw = 1;
                     changeWaterPort(i, WATER_CLOSED, 0, 0);
-                    delay(2000);
                     open_ports--;
+                    appendToSystemLog(i, SYSTEM_LOG_EVENT_TYPE_AUTO_CLOSE, mon->current_value, now_s);
+                    delay(2000);
                 }
             }
         }

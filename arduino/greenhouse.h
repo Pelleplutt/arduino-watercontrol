@@ -126,7 +126,35 @@ typedef struct monitor {
     unsigned long water_open_for;
 };
 
+#define SYSTEM_LOG_EVENT_TYPE_BOOT 'b'
+#define SYSTEM_LOG_EVENT_TYPE_SENSE 's'
+#define SYSTEM_LOG_EVENT_TYPE_SENSE_FUNKY 'f'
+#define SYSTEM_LOG_EVENT_TYPE_INTERVAL_OPEN 'i'
+#define SYSTEM_LOG_EVENT_TYPE_MANUAL_OPEN 'm'
+#define SYSTEM_LOG_EVENT_TYPE_SENSE_OPEN 't'
+#define SYSTEM_LOG_EVENT_TYPE_AUTO_CLOSE 'c'
+#define SYSTEM_LOG_EVENT_TYPE_MANUAL_CLOSE 'C'
 
+typedef struct system_log_entry {
+        /* millis()/1000 at time of event */
+    unsigned long time;
+
+        /* See defined above */
+    char event_type;
+
+        /* Sensor, -1 if not relevant */
+    char monitor;
+
+        /* Current value at this point. For sense/sense_funk and open this will
+         * be the new value */
+    int current_value;
+};
+
+#define SYSTEM_LOG_COUNT 128
+extern system_log_entry system_log[SYSTEM_LOG_COUNT];
+extern int last_system_log;
+
+    /* Currently selected entry from main screen */
 extern int monitor_selection;
 
     /* We cache these from the main loop as some timing routines will depend
@@ -212,6 +240,8 @@ void
 appendToOpenLog(unsigned char monitor, char mode, unsigned long time);
 void
 appendToSenseLog(unsigned char monitor, int value, unsigned long time);
+void
+appendToSystemLog(char monitor, char event_type, int value, unsigned long time);
 
 
 #endif

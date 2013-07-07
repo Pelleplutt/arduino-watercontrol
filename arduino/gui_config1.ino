@@ -405,7 +405,13 @@ handleConfigManualInput(int button) {
         case BUTTON_1:
 
             {
-                changeWaterPort(monitor_selection, monitors[monitor_selection].water_state ^ 1, MANUAL_WATER_OPEN_TIME, OPEN_MODE_MANUAL);
+                if(monitors[monitor_selection].water_state == WATER_OPEN) {
+                    changeWaterPort(monitor_selection, WATER_CLOSED, MANUAL_WATER_OPEN_TIME, OPEN_MODE_MANUAL);
+                    appendToSystemLog(monitor_selection, SYSTEM_LOG_EVENT_TYPE_MANUAL_CLOSE, monitors[monitor_selection].current_value, now_s);
+                } else {
+                    changeWaterPort(monitor_selection, WATER_OPEN, MANUAL_WATER_OPEN_TIME, OPEN_MODE_MANUAL);
+                    appendToSystemLog(monitor_selection, SYSTEM_LOG_EVENT_TYPE_MANUAL_OPEN, monitors[monitor_selection].current_value, now_s);
+                }
                 drawConfigEditManual();
                 break;
             }
