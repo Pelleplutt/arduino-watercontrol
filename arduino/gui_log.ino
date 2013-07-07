@@ -1,6 +1,6 @@
 #include "greenhouse.h"
 
-int top_system_log_entry = 0;
+int system_log_offset = 0;
 int system_log_page = 0;
 
 /*******************************************************************************/
@@ -89,14 +89,30 @@ drawSystemLog() {
 
     GLCD.ClearScreen();
     GLCD.SelectFont(System5x7, BLACK);
-        /* This will never wrap as we check this when setting the top entry
-         * below */
-    char entry_number  = top_system_log_entry + 8;
 
-        /* Current row we are drawing */
-    char row = 0;
+        /* Start at the current entry, then go backwards in entries (and in
+         * time) foreach each row we are showing */
+    int entry_number  = last_system_log;
+
+        /* We will never set system_log_offset to a value greater then
+         * last_system_log unless we have wrapped entries. */
+    if(last_system_log < system_log_offset) {
+        entry_number = SYSTEM_LOG_COUNT - (system_log_offset - last_system_log);
+    } else {
+        entry_number -= system_log_offset;
+    }
+
     for(char i = 0; i < 8; i++) {
         entry_number--;
+        if(entry_number == -1) {
+            entry_number = SYSTEM_LOG_COUNT - 1;
+                /* If we wrapped and the last entry is invalid, stop displaying
+                 * right now please */
+            if(system_log[entry_number].event_type !=
+                SYSTEM_LOG_EVENT_TYPE_INVALID) {
+                break;
+            }
+        }
         log = &system_log[entry_number];
 
         if(log->event_type != SYSTEM_LOG_EVENT_TYPE_INVALID) {
@@ -152,7 +168,7 @@ drawSystemLog() {
                             monitors[log->monitor].name);
                 }
             }
-            GLCD.CursorTo(0, row++);
+            GLCD.CursorTo(0, i);
             GLCD.print(reading);
         }
     }
@@ -230,32 +246,30 @@ void
 handleSystemLogInput(int button) {
     switch(button) {
         case BUTTON_0:
-            top_system_log_entry = (top_system_log_entry + 8) % SYSTEM_LOG_COUNT;
-            /* SYSTEM_LOG_COUNT %8 == 0 */
-            if(last_system_log < top_system_log_entry) {
-                /* The current top value is allowed to be bigger only if we
-                 * have wrapped the buffer */
-                if(last_system_log == 0) {
-                    if(system_log[SYSTEM_LOG_COUNT - 1].time == 0) {
-                        top_system_log_entry = 0;
-                    }
-                } else {
-                    if(system_log[last_system_log - 1].time == 0) {
-                        top_system_log_entry = 0;
-                    }
-                }
+                /* Current entry will be valid only if we have written to it
+                 * before */
+            if(system_log[last_system_log].event_type != SYSTEM_LOG_EVENT_TYPE_INVALID ||
+                (system_log_offset + 8 < last_system_log)) {
+
+                system_log_offset = (system_log_offset + 8) % SYSTEM_LOG_COUNT;
             }
+
             draw();
+            break;
         case BUTTON_1:
-            if(top_system_log_entry >= 8) {
+            if(system_log_offset >= 8) {
                 /* If we have set a larger value then this, then all
                  * values below are good */
-                top_system_log_entry -= 8;
+                system_log_offset -= 8;
             } else {
                 /* Easy check here, if the last value in the circular log
                  * is good, then we can wrap safely. Otherwise stay put */
-                if(system_log[SYSTEM_LOG_COUNT - 1].time > 0) {
-                    top_system_log_entry = SYSTEM_LOG_COUNT - 8;
+                if(system_log[SYSTEM_LOG_COUNT - 1].event_type != SYSTEM_LOG_EVENT_TYPE_INVALID) {
+                    system_log_offset = SYSTEM_LOG_COUNT - 8;
+                } else {
+                        /* Otherwise pick the highest top offset we can do that
+                         * is an even offset */
+                    system_log_offset = (int)(last_system_log / 8) * 8;
                 }
             }
             draw();
