@@ -196,6 +196,7 @@ setup() {
     pinMode(PORT_SENSE1_E, OUTPUT);
 
     loadMonitors();
+    memset(system_log, sizeof(system_log), 0);
     appendToSystemLog(-1, SYSTEM_LOG_EVENT_TYPE_BOOT, SENSE_VALUE_INVALID, 0);
 
     GLCD.Init();
@@ -210,25 +211,20 @@ draw() {
     last_auto_redraw = millis();
     switch(current_screen) {
         case SCREEN_OVERVIEW:
-            {
-                drawOverview();
-                break;
-            }
+            drawOverview();
+            break;
         case SCREEN_LOG_OPEN:
-            {
-                drawOpenLog();
-                break;
-            }
+            drawOpenLog();
+            break;
         case SCREEN_LOG_SENSE:
-            {
-                drawSenseLog();
-                break;
-            }
+            drawSenseLog();
+            break;
         case SCREEN_CONFIG1:
-            {
-                drawConfig1();
-                break;
-            }
+            drawConfig1();
+            break;
+        case SCREEN_SYSTEM_LOG:
+            drawSystemLog();
+            break;
     }
 }
 
@@ -257,26 +253,20 @@ handleInput(int button) {
 
     switch(current_screen) {
         case SCREEN_OVERVIEW:
-            {
-                handleOverviewInput(button);
-                break;
-            }
+            handleOverviewInput(button);
+            break;
         case SCREEN_LOG_OPEN:
-            {
-                handleOpenLogInput(button);
-                break;
-            }
+            handleOpenLogInput(button);
+            break;
         case SCREEN_LOG_SENSE:
-            {
-                handleSenseLogInput(button);
-                break;
-            }
+            handleSenseLogInput(button);
+            break;
         case SCREEN_CONFIG1:
-            {
-                handleConfig1Input(button);
-                break;
-            }
-
+            handleConfig1Input(button);
+            break;
+        case SCREEN_SYSTEM_LOG:
+            handleSystemLogInput(button);
+            break;
     }
 }
 
@@ -428,7 +418,7 @@ loop() {
         }
     }
 
-    if(current_screen == SCREEN_OVERVIEW || current_screen == SCREEN_LOG_OPEN || current_screen == SCREEN_LOG_SENSE) {
+    if(current_screen != SCREEN_CONFIG1) {
             /* Redraw the screen every second */
         if(now - last_auto_redraw >= 1000) {
             needs_redraw = 1;

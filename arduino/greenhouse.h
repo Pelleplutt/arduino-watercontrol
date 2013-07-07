@@ -32,6 +32,7 @@
 #define SCREEN_LOG_OPEN 1
 #define SCREEN_LOG_SENSE 2
 #define SCREEN_CONFIG1 3
+#define SCREEN_SYSTEM_LOG 4
 
 #define NAME_MAX_LEN 10
 #define MAX_WATER_DURATION 1800
@@ -204,6 +205,10 @@ void
 drawSenseLog();
 void 
 handleSenseLogInput(int button);
+void
+handleSystemLogInput(int button);
+void
+drawSystemLog();
 
     /* GUI_CONFIG1 */
 void 

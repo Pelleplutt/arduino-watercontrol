@@ -1,5 +1,8 @@
 #include "greenhouse.h"
 
+int top_system_log_entry = 0;
+int system_log_page = 0;
+
 /*******************************************************************************/
 void
 drawOpenLog() {
@@ -81,6 +84,89 @@ drawSenseLog() {
 }
 
 void
+drawSystemLog() {
+    system_log_entry *log;
+
+    GLCD.ClearScreen();
+    GLCD.SelectFont(System5x7, BLACK);
+    char entry_number  = top_system_log_entry;
+
+
+        /* We will have no inbetween invalid entries, either they are set or
+         * they are empty so simply draw the ones we can, skip the rest */
+    for(char i = 0; i < 8; i++) {
+        entry_number--;
+        if(entry_number == -1) {
+            entry_number = SYSTEM_LOG_COUNT - 1;
+        }
+
+        log = &system_log[entry_number];
+        if(log->time) {
+            char reading[25];
+            char const *action_str;
+
+            switch(log->event_type) {
+                case SYSTEM_LOG_EVENT_TYPE_BOOT:
+                    action_str = "Boot";
+                    break;
+                case SYSTEM_LOG_EVENT_TYPE_SENSE :
+                    action_str = "Sense";
+                    break;
+                case SYSTEM_LOG_EVENT_TYPE_SENSE_FUNKY :
+                    action_str = "Funky";
+                    break;
+                case SYSTEM_LOG_EVENT_TYPE_INTERVAL_OPEN :
+                    action_str = "IOpen";
+                    break;
+                case SYSTEM_LOG_EVENT_TYPE_MANUAL_OPEN :
+                    action_str = "MOpen";
+                    break;
+                case SYSTEM_LOG_EVENT_TYPE_SENSE_OPEN :
+                    action_str = "SOpen";
+                    break;
+                case SYSTEM_LOG_EVENT_TYPE_AUTO_CLOSE :
+                    action_str = "AClos";
+                    break;
+                case SYSTEM_LOG_EVENT_TYPE_MANUAL_CLOSE :
+                    action_str = "MClos";
+                    break;
+            }
+
+            if(log->monitor == -1) {
+                sprintf(reading, "%5.5s %5s", 
+                        relativeTimeString(log->time, 5),
+                        action_str);
+            } else if(log->current_value < 0) {
+                sprintf(reading, "%5.5s %5s %.10s", 
+                        relativeTimeString(log->time, 5),
+                        action_str, 
+                        monitors[log->monitor].name);
+            } else {
+                if(system_log_page == 0) {
+                    sprintf(reading, "%5.5s %5s %.10s", 
+                            relativeTimeString(log->time, 5),
+                            action_str, 
+                            monitors[log->monitor].name);
+                } else {
+                    sprintf(reading, "%5.5s %3d%% %.11s", 
+                            relativeTimeString(log->time, 5),
+                            log->current_value,
+                            monitors[log->monitor].name);
+                }
+            }
+            GLCD.CursorTo(0, i);
+            GLCD.print(reading);
+        }
+    }
+
+        /* No valid enties? */
+    if(last_system_log == 0 && system_log[0].time == 0) {
+
+        GLCD.print("No log");
+    }
+}
+
+void
 clearSenseLog() {
     monitors[monitor_selection].current_sense_log = 0;
     memset(monitors[monitor_selection].sense_log, sizeof(monitors[monitor_selection].sense_log), 0);
@@ -132,6 +218,57 @@ handleSenseLogInput(int button) {
         case BUTTON_2:
             {
                 clearSenseLog();
+                draw();
+                break;
+            }
+        case BUTTON_3:
+            {
+                switchScreen(SCREEN_CONFIG1);
+            }
+    }
+}
+
+void
+handleSystemLogInput(int button) {
+    switch(button) {
+        case BUTTON_0:
+        {
+            top_system_log_entry = (top_system_log_entry + 8) % SYSTEM_LOG_COUNT;
+                /* SYSTEM_LOG_COUNT %8 == 0 */
+            if(last_system_log < top_system_log_entry) {
+                /* The current top value is allowed to be bigger only if we
+                 * have wrapped the buffer */
+                if(last_system_log == 0) {
+                    if(system_log[SYSTEM_LOG_COUNT - 1].time == 0) {
+                        top_system_log_entry = 0;
+                    }
+                } else {
+                    if(system_log[last_system_log - 1].time == 0) {
+                        top_system_log_entry = 0;
+                    }
+                }
+            }
+            draw();
+        }
+        case BUTTON_1:
+            {
+                if(top_system_log_entry >= 8) {
+                        /* If we have set a larger value then this, then all
+                         * values below are good */
+                    top_system_log_entry -= 8;
+                } else {
+                    /* Easy check here, if the last value in the circular log
+                     * is good, then we can wrap safely. Otherwise stay put */
+                    if(system_log[SYSTEM_LOG_COUNT - 1].time > 0) {
+                        top_system_log_entry = SYSTEM_LOG_COUNT - 8;
+                    }
+                }
+                draw();
+                break;
+            }
+        case BUTTON_2:
+            {
+                system_log_page ^= 1;
                 draw();
                 break;
             }

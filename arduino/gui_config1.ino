@@ -784,7 +784,7 @@ handleConfig1Input(int button) {
                         config_monitor_changed = 0;
                     }
 
-                    switchScreen(SCREEN_OVERVIEW);
+                    switchScreen(SCREEN_SYSTEM_LOG);
                     break;
                 }
         }
