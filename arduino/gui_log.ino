@@ -12,7 +12,7 @@ drawOpenLog() {
 
         /* We will have no inbetween invalid entries, either they are set or
          * they are empty so simply draw the ones we can, skip the rest */
-    for(char i = 0; i < 17; i++) {
+    for(char i = 0; i < 16; i++) {
         entry_number--;
         if(entry_number == -1) {
             entry_number = MONITOR_LOG_COUNT - 1;
@@ -50,7 +50,7 @@ drawSenseLog() {
 
         /* We will have no inbetween invalid entries, either they are set or
          * they are empty so simply draw the ones we can, skip the rest */
-    for(char i = 0; i < 17; i++) {
+    for(char i = 0; i < 16; i++) {
         entry_number--;
         if(entry_number == -1) {
             entry_number = MONITOR_LOG_COUNT - 1;
@@ -64,11 +64,11 @@ drawSenseLog() {
                 i < 8?i:i-8);
 
            
-            sprintf(reading, "%2d%% ", getSensorCalibratedPercent(log->value,
+            sprintf(reading, "%3d%% ", getSensorCalibratedPercent(log->value,
                         monitors[monitor_selection].calibrated_min,
                         monitors[monitor_selection].calibrated_max));
             GLCD.print(reading);
-            GLCD.print(relativeTimeString(log->time, 7));
+            GLCD.print(relativeTimeString(log->time, 6));
         }
     }
 
