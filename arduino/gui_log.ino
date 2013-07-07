@@ -27,7 +27,7 @@ drawOpenLog() {
                 i < 8?0:DISPLAY_X_MIDDLE,
                 i < 8?i:i-8);
 
-            
+
             GLCD.print(log->open_mode);
             GLCD.print(" ");
             GLCD.print(relativeTimeString(log->time));
@@ -66,7 +66,7 @@ drawSenseLog() {
                 i < 8?0:DISPLAY_X_MIDDLE,
                 i < 8?i:i-8);
 
-           
+
             sprintf(reading, "%3d%% ", getSensorCalibratedPercent(log->value,
                         monitors[monitor_selection].calibrated_min,
                         monitors[monitor_selection].calibrated_max));
@@ -147,22 +147,22 @@ drawSystemLog() {
             }
 
             if(log->monitor == -1) {
-                sprintf(reading, "%5.5s %5s", 
+                sprintf(reading, "%5.5s %5s",
                         relativeTimeString(log->time, 5),
                         action_str);
             } else if(log->current_value < 0) {
-                sprintf(reading, "%5.5s %5s %.10s", 
+                sprintf(reading, "%5.5s %5s %.10s",
                         relativeTimeString(log->time, 5),
-                        action_str, 
+                        action_str,
                         monitors[log->monitor].name);
             } else {
                 if(system_log_page == 0) {
-                    sprintf(reading, "%5.5s %5s %.10s", 
+                    sprintf(reading, "%5.5s %5s %.10s",
                             relativeTimeString(log->time, 5),
-                            action_str, 
+                            action_str,
                             monitors[log->monitor].name);
                 } else {
-                    sprintf(reading, "%5.5s %3d%% %.11s", 
+                    sprintf(reading, "%5.5s %3d%% %.11s",
                             relativeTimeString(log->time, 5),
                             log->current_value,
                             monitors[log->monitor].name);
@@ -198,24 +198,19 @@ handleOpenLogInput(int button) {
     switch(button) {
         case BUTTON_0:
         case BUTTON_1:
-            {
-                draw();
-                break;
-            }
+            draw();
+            break;
         case BUTTON_2:
-            {
-                clearOpenLog();
-                draw();
-                break;
-            }
+            clearOpenLog();
+            draw();
+            break;
         case BUTTON_3:
-            {
-                if(monitors[monitor_selection].trigger_value) {
-                    switchScreen(SCREEN_LOG_SENSE);
-                } else {
-                    switchScreen(SCREEN_CONFIG1);
-                }
+            if(monitors[monitor_selection].trigger_value) {
+                switchScreen(SCREEN_LOG_SENSE);
+            } else {
+                switchScreen(SCREEN_CONFIG1);
             }
+            break;
     }
 }
 
@@ -225,20 +220,15 @@ handleSenseLogInput(int button) {
     switch(button) {
         case BUTTON_0:
         case BUTTON_1:
-            {
-                draw();
-                break;
-            }
+            draw();
+            break;
         case BUTTON_2:
-            {
-                clearSenseLog();
-                draw();
-                break;
-            }
+            clearSenseLog();
+            draw();
+            break;
         case BUTTON_3:
-            {
-                switchScreen(SCREEN_CONFIG1);
-            }
+            switchScreen(SCREEN_CONFIG1);
+            break;
     }
 }
 
@@ -283,5 +273,3 @@ handleSystemLogInput(int button) {
             break;
     }
 }
-
-
