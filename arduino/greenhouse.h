@@ -55,6 +55,8 @@
 
 #define SENSOR_MEASURE_INTERVAL (60 * 10)
 
+#define MIN_WATER_AUTO_INTERVAL (15 * 60)
+
     /* FIXME DO WE HAVE A MAX define somewhere ...? */
 #define MILLIS_MAX 4294967295
 

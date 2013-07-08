@@ -318,9 +318,21 @@ loop() {
         for(i = 0; i < 8; i++) {
             monitor *mon = &monitors[i];
             if(mon->water_state == WATER_CLOSED) {
-                if(mon->enabled && open_ports < MAX_OPEN_WATER_PORTS) {
+
+                    /* Do not open unless port is active.
+
+                     * Keep the number of open ports limited, this will keep
+                     * us from overloading the power supply. We have 2A, each
+                     * open port will use 250mA, keep some overhead for
+                     * openning current and power for the rest of the system.
+                     */
+
+                if(mon->enabled &&
+                        open_ports < MAX_OPEN_WATER_PORTS) {
+
+                    unsigned long seconds_since = now_s - mon->last_water_open;
+
                     if(mon->water_interval > 0) {
-                        unsigned long seconds_since = now_s - mon->last_water_open;
 
                         if(seconds_since > mon->water_interval) {
                             showMonitorAction(i, "Open Interval");
@@ -330,15 +342,24 @@ loop() {
                             delay(2000);
                             open_ports++;
                         }
-                            /* Only do a sensor reading if we have proper
-                             * calibrated values and a trigger value */
                     }
 
                         /* Re-check the water_state here as we might very well
-                         * have opened the port before */
+                         * have opened the port before
+
+                         * Keep a minimum threshold between sensed triggered
+                         * openings. If we just opened it will take some time
+                         * for the moist to spread across the soil to the
+                         * sensor. Even if we measure every 10min we will keep
+                         * some extra spacing here.
+
+                         * Only do a sensor reading if we have proper
+                         * calibrated values and a trigger value
+                         */
                     if(!measuring && mon->water_state == WATER_CLOSED &&
-                        mon->trigger_value && mon->calibrated_min &&
-                        mon->calibrated_max) {
+                            mon->trigger_value && mon->calibrated_min &&
+                            mon->calibrated_max &&
+                            seconds_since >= MIN_WATER_AUTO_INTERVAL) {
 
                         unsigned long seconds_since = now_s - mon->last_sensor_read;
 
