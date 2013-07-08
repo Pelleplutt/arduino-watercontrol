@@ -8,8 +8,9 @@
 #include <fonts/SystemFont5x7.h>
 #include <fonts/Arial_bold_14.h>
 
+    /* Minium read time in ms between button repeats */
 #define BUTTON_DELAY  150
-
+    /* Sparsly used. Output information of doings onto the serial interface. */
 #define SERIAL_DEBUG 1
 
 #ifdef SERIAL_DEBUG
@@ -20,46 +21,87 @@
 #   define DEBUGLN(a)
 #endif
 
+    /* Button defines. Quite silly really, but this is more for the obvious
+     * clearity of where we look at buttons and numbers. Makes it easier to
+     * search if nothing else. */
 #define BUTTON_0 0
 #define BUTTON_1 1
 #define BUTTON_2 2
 #define BUTTON_3 3
 
+    /* System5x7 font display positions */
 #define DISPLAY_Y_MIDDLE  4
 #define DISPLAY_X_MIDDLE  11
 
+    /* GUI System display information. Controls screen switching, active
+     * display etc. */
 #define SCREEN_OVERVIEW  0
 #define SCREEN_LOG_OPEN 1
 #define SCREEN_LOG_SENSE 2
 #define SCREEN_CONFIG1 3
 #define SCREEN_SYSTEM_LOG 4
 
+    /* Maximum length of sensor name */
 #define NAME_MAX_LEN 10
+
+    /* Maximum duration we can specify of open water port */
 #define MAX_WATER_DURATION 1800
+    /* Maxiumum specifyable interval */
 #define MAX_WATER_INTERVAL (7 * 86400)
 
+    /* If sensor current value is this, please ignore it */
 #define SENSE_VALUE_INVALID -1
 
+    /* Defines to control water flow */
 #define WATER_OPEN 1
 #define WATER_CLOSED 0
 
+    /* When using manual open, set the port open for this long, then auto close
+     * */
 #define MANUAL_WATER_OPEN_TIME (15 * 60)
 
+    /* The maximum number of open ports at the same time. We need this to
+     * control the current we are using. Our power supply is rated at 2A, each
+     * solenoid is using 250mA when open. I am keeping this conservative as is
+     * does not really matter that much. But we need headroom for Arduino and
+     * the sensors as well. */
 #define MAX_OPEN_WATER_PORTS 3
 
+    /* Open mode defines, used in open_log entries */
 #define OPEN_MODE_MANUAL 'M'
 #define OPEN_MODE_SENSOR 'S'
 #define OPEN_MODE_INTERVAL 'I'
 
+    /* Number of per monitor log entries we will keep for open log and sense
+     * log */
 #define MONITOR_LOG_COUNT 17
 
+    /* Sense the reading of each sensor every this often */
 #define SENSOR_MEASURE_INTERVAL (60 * 10)
 
+    /* Do not allow opening the port based upon sensor input if we opened it no
+     * longer then this time ago. This is a flood protection based upon
+     * sensors. It might take some time before moist reaches the sensor after
+     * we open it. So leave it alone for some time before going at it again. */
 #define MIN_WATER_AUTO_INTERVAL (15 * 60)
 
+    /* The value of millis() before it wraps. This should really be a LONG_MAX
+     * value, but cannot find it... */
     /* FIXME DO WE HAVE A MAX define somewhere ...? */
 #define MILLIS_MAX 4294967295
 
+    /* Pad each entry in EEPROM by this much, this will give us some headroom
+     * when changing configuration structure later so we do not cross read
+     * entries. The Mega has 4k of this anyhow so we will be good */
+#define EEPROMBYTES_PER_MONITOR 128
+
+    /* Silly magic byte so we know if a valid sensor is saved in the slot */
+#define EEPROM_SENSOR_MAGIC 'V'
+
+    /* Number of global system log entries we will keep. */
+#define SYSTEM_LOG_COUNT 128
+
+    /* Log structure for individual per monitor port openings */
 typedef struct water_open_log {
         /* millis() / 1000 time of open */
     unsigned long time;
@@ -69,6 +111,7 @@ typedef struct water_open_log {
     unsigned int duration;
 };
 
+    /* Log structure for individual per monitor sensor readings */
 typedef struct water_sense_log {
         /* millis() / 1000 time of open */
     unsigned long time;
@@ -76,13 +119,8 @@ typedef struct water_sense_log {
     int value;
 };
 
-    /* Pad each entry in EEPROM by this much, this will give us some headroom
-     * when changing configuration structure later so we do not cross read
-     * entries. The Mega has 4k of this anyhow so we will be good */
-#define EEPROMBYTES_PER_MONITOR 128 
-    /* Silly magic byte so we know if a valid sensor is saved in the slot */
-#define EEPROM_SENSOR_MAGIC 'V'
-
+    /* Structure per monitor. Keeps all the information about the port that we
+     * might need */
 typedef struct monitor {
     char  name[NAME_MAX_LEN + 1];
 
@@ -129,6 +167,11 @@ typedef struct monitor {
     unsigned long water_open_for;
 };
 
+    /* Used for event_type in system_log_entry. Defines the action taken for
+     * the log entry */
+
+    /* Use 0 to mark invalid, structure will be memset to all zero when we boot
+     * */
 #define SYSTEM_LOG_EVENT_TYPE_INVALID 0
 #define SYSTEM_LOG_EVENT_TYPE_BOOT 'b'
 #define SYSTEM_LOG_EVENT_TYPE_SENSE 's'
@@ -154,7 +197,6 @@ typedef struct system_log_entry {
     int current_value;
 };
 
-#define SYSTEM_LOG_COUNT 128
 extern system_log_entry system_log[SYSTEM_LOG_COUNT];
 extern int last_system_log;
 
@@ -178,7 +220,7 @@ extern char config_monitor_changed;
 extern char measuring;
 
     /* ARDUINO */
-void 
+void
 draw();
 
 void
@@ -194,19 +236,19 @@ void
 saveMonitors();
 
     /* GUI_OVERVIEW */
-void 
+void
 drawOverview();
-void 
+void
 handleOverviewInput(int button);
 
     /* GUI_LOG */
-void 
+void
 drawOpenLog();
-void 
+void
 handleOpenLogInput(int button);
-void 
+void
 drawSenseLog();
-void 
+void
 handleSenseLogInput(int button);
 void
 handleSystemLogInput(int button);
@@ -214,18 +256,18 @@ void
 drawSystemLog();
 
     /* GUI_CONFIG1 */
-void 
+void
 drawConf();
-void 
+void
 handleConfInput(int button);
 
-void 
+void
 drawSensorBar(int value, unsigned long calibrated_min, unsigned long calibrated_max);
 
     /* STRINGS */
-char 
+char
 *timeString(int seconds);
-char 
+char
 *timeString(int seconds, unsigned char maxlen);
 char *
 relativeTimeString(unsigned long when);
@@ -233,14 +275,14 @@ char *
 relativeTimeString(unsigned long when, unsigned char maxlen);
 
     /* WATER */
-void 
+void
 changeWaterPort(unsigned char monitor, unsigned char state);
 
     /* MEASURE */
-unsigned int 
+unsigned int
 measure(unsigned char monitor);
 
-int 
+int
 getSensorCalibratedPercent(int value, unsigned long calibrated_min, unsigned long calibrated_max);
 
     /* LOG */
